@@ -1,0 +1,32 @@
+{
+  "dataset": "sic_10deg",
+  "angle_deg": 10.0,
+  "n_points": 5185,
+  "outlier_count": 13,
+  "recomputed_mask_matches": true,
+  "source_metadata": {
+    "source": "/mnt/data/repo_work/sic-epitaxy-thickness-modeling-main/data/raw/附件1.xlsx",
+    "n_points": 7468,
+    "wn_min": 400.1569,
+    "wn_max": 4000.122,
+    "reflectance_min": 0.636093383,
+    "reflectance_max": 95.38499492,
+    "fraction_above_100": 0.0,
+    "median_step": 0.4819999999999709,
+    "crop_min": 1500.0,
+    "crop_max": 4000.0,
+    "crop_n_points": 5185
+  },
+  "parameters": {
+    "drop_first_zero": true,
+    "hampel_window": 7,
+    "hampel_sigma": 3.5,
+    "sg_window": 21,
+    "sg_polyorder": 3,
+    "baseline_degree": 3,
+    "baseline_iterations": 6,
+    "envelope_window": 301,
+    "envelope_polyorder": 2,
+    "min_envelope_fraction": 0.08
+  }
+}

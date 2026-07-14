@@ -1,0 +1,32 @@
+{
+  "model": "tmm",
+  "method": "joint_tmm",
+  "thickness_um": 3.71750809931618,
+  "success": true,
+  "metrics": {
+    "rmse": 0.33852193397168723,
+    "rss": 1402.4393071068002,
+    "bic": -26426.86988012972
+  },
+  "parameters": {
+    "kappa_scale": 1.0,
+    "optimizer": "coarse_grid_plus_bounded_scalar",
+    "search_interval_um": [
+      2.719697808356792,
+      4.532829680594654
+    ],
+    "fit_domain": "normalized_fringe",
+    "calibration_si_10deg": [
+      0.016836492937714335,
+      -0.039782892545771054,
+      0.6524112350378564,
+      -0.5676770331611208
+    ],
+    "calibration_si_15deg": [
+      0.02414577912724388,
+      -0.036717542948605686,
+      0.618540548171821,
+      -0.7049294783712835
+    ]
+  }
+}
