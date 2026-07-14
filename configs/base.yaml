@@ -1,0 +1,47 @@
+project:
+  random_seed: 2025
+
+paths:
+  raw_dir: data/raw
+  output_dir: outputs
+
+preprocessing:
+  drop_first_zero: true
+  hampel_window: 7
+  hampel_sigma: 3.5
+  sg_window: 21
+  sg_polyorder: 3
+  baseline_degree: 3
+  baseline_iterations: 6
+  envelope_window: 301
+  envelope_polyorder: 2
+  min_envelope_fraction: 0.08
+
+estimation:
+  thickness_bounds_um: [1.0, 1000.0]
+  peak_prominence: 0.25
+  peak_distance: 8
+  fft_min_cycles: 2.0
+  hilbert_band_ratio: [0.55, 1.45]
+  robust_loss: soft_l1
+  max_nfev: 5000
+  phase_starts: [-3.1415926, -1.5707963, 0.0, 1.5707963]
+
+uncertainty:
+  bootstrap_enabled: true
+  bootstrap_repeats: 400
+  block_size: 80
+  confidence_level: 0.95
+  sensitivity_enabled: true
+  tmm_scan:
+    enabled: true
+
+multibeam:
+  # 必须同时满足峰谷厚度分离、二次谐波和高可见度，避免仅凭BIC误判。
+  peak_valley_pct: 1.0
+  h2_h1: 0.04
+  visibility: 0.12
+  delta_bic: 10.0
+
+plotting:
+  dpi: 180

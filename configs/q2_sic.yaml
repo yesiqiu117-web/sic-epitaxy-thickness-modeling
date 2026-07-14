@@ -1,0 +1,48 @@
+extends: configs/base.yaml
+analysis_name: q2_sic
+material: SiC
+
+# 4H-SiC 透明区采用一声子 TO-LO 因子化介电函数。
+# ε∞≈6.52；TO/LO 频率参考 Mainali et al. (2024)。
+refractive_index:
+  layer:
+    model: phonon_tolo
+    epsilon_inf: 6.52
+    to_cm1: 797.7
+    lo_cm1: 992.1
+    gamma_cm1: 4.0
+  # 衬底掺杂信息未知，使用轻微的有效折射率/吸收修正，仅用于 TMM 敏感性分析。
+  substrate:
+    model: phonon_tolo
+    epsilon_inf: 6.52
+    to_cm1: 797.7
+    lo_cm1: 992.1
+    gamma_cm1: 8.0
+    n_scale: 1.02
+    kappa_offset: 0.01
+
+fit:
+  primary_range_cm1: [1500.0, 4000.0]
+  validation_ranges_cm1:
+    - [1100.0, 1500.0]
+    - [1800.0, 2800.0]
+    - [2800.0, 4000.0]
+  run_tmm_correction: true
+  fit_kappa_scale: false
+  # SiC峰、谷和Hilbert结果高度一致，使用基频共识作为最终结果。
+  final_estimator: fundamental_consensus
+
+uncertainty:
+  tmm_scan:
+    enabled: true
+    axes:
+      n_scale: [1.00, 1.02, 1.04]
+      kappa_offset: [0.00, 0.01, 0.03]
+
+datasets:
+  - name: sic_10deg
+    filename: 附件1.xlsx
+    angle_deg: 10.0
+  - name: sic_15deg
+    filename: 附件2.xlsx
+    angle_deg: 15.0

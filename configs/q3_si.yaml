@@ -1,0 +1,39 @@
+extends: configs/base.yaml
+analysis_name: q3_si
+material: Si
+
+# 室温硅折射率使用 Chandler-Horowitz & Amirtharaj (2005) 的中红外公式。
+refractive_index:
+  layer:
+    model: chandler_horowitz_si
+    kappa: 0.0005
+  # 衬底掺杂未知：TMM 中仅作有效参数化，正式论文应做敏感性区间而非唯一认定。
+  substrate:
+    model: chandler_horowitz_si
+    kappa: 0.02
+    n_offset: 0.04
+
+fit:
+  primary_range_cm1: [550.0, 3500.0]
+  validation_ranges_cm1:
+    - [550.0, 1500.0]
+    - [1500.0, 2500.0]
+    - [2500.0, 3500.0]
+  fit_kappa_scale: false
+  # 多光束情况下峰位比波谷/全波形更稳定，最终采用峰坐标修正。
+  final_estimator: peak_only
+
+uncertainty:
+  tmm_scan:
+    enabled: true
+    axes:
+      n_offset: [0.00, 0.04, 0.08]
+      kappa: [0.005, 0.02, 0.05]
+
+datasets:
+  - name: si_10deg
+    filename: 附件3.xlsx
+    angle_deg: 10.0
+  - name: si_15deg
+    filename: 附件4.xlsx
+    angle_deg: 15.0

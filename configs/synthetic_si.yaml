@@ -1,0 +1,17 @@
+extends: configs/base.yaml
+analysis_name: synthetic_si
+material: Si
+paths:
+  raw_dir: data/synthetic
+  output_dir: outputs/synthetic
+refractive_index:
+  layer: {model: constant, n: 3.42, kappa: 0.003}
+  substrate: {model: constant, n: 3.55, kappa: 0.025}
+fit:
+  primary_range_cm1: [550.0, 3500.0]
+  validation_ranges_cm1: [[550.0, 1500.0], [1500.0, 2500.0], [2500.0, 3500.0]]
+  fit_kappa_scale: true
+  kappa_scale_bounds: [0.2, 5.0]
+datasets:
+  - {name: synthetic_si_10deg, filename: synthetic_附件3.xlsx, angle_deg: 10.0}
+  - {name: synthetic_si_15deg, filename: synthetic_附件4.xlsx, angle_deg: 15.0}

@@ -1,0 +1,17 @@
+extends: configs/base.yaml
+analysis_name: synthetic_sic
+material: SiC
+paths:
+  raw_dir: data/synthetic
+  output_dir: outputs/synthetic
+refractive_index:
+  layer: {model: constant, n: 2.60, kappa: 0.0}
+  substrate: {model: constant, n: 2.68, kappa: 0.0}
+fit:
+  primary_range_cm1: [1500.0, 4000.0]
+  validation_ranges_cm1: [[1500.0, 2600.0], [2600.0, 4000.0]]
+  run_tmm_correction: true
+  fit_kappa_scale: false
+datasets:
+  - {name: synthetic_sic_10deg, filename: synthetic_附件1.xlsx, angle_deg: 10.0}
+  - {name: synthetic_sic_15deg, filename: synthetic_附件2.xlsx, angle_deg: 15.0}
