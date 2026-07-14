@@ -1,0 +1,395 @@
+{
+  "analysis_name": "q2_sic",
+  "mode": "sic",
+  "material": "SiC",
+  "warning": "外延层折射率采用文献模型；衬底掺杂与吸收参数未知，因此 TMM 仅作物理敏感性分析，最终厚度应综合跨角度多方法一致性、谐波模型和分频段稳定性。",
+  "initial_thickness_um": 7.481125942765237,
+  "robust_consensus": {
+    "median_um": 7.481125942765237,
+    "method_min_um": 7.454861431371982,
+    "method_max_um": 7.49224363401775,
+    "q25_um": 7.461905283992248,
+    "q75_um": 7.490247634603161,
+    "note": "该区间为跨角度、跨方法离散范围，不等同于统计置信区间。"
+  },
+  "single_methods": [
+    {
+      "dataset": "sic_10deg",
+      "angle_deg": 10.0,
+      "fft_um": 7.473184999683173,
+      "peak_um": 7.489066885847301,
+      "valley_um": 7.491895441795338,
+      "hilbert_um": 7.489698365539103,
+      "hilbert_r2": 0.9999583353801463,
+      "h2_h1": 0.015667114278507914,
+      "h3_h1": 0.19529752576839107,
+      "outlier_count": 13
+    },
+    {
+      "dataset": "sic_15deg",
+      "angle_deg": 15.0,
+      "fft_um": 7.49224363401775,
+      "peak_um": 7.463448270339051,
+      "valley_um": 7.454861431371982,
+      "hilbert_um": 7.457276324951839,
+      "hilbert_r2": 0.9999355366800585,
+      "h2_h1": 0.01997529631917389,
+      "h3_h1": 0.21245707583161716,
+      "outlier_count": 21
+    }
+  ],
+  "single_details": {
+    "sic_10deg": {
+      "fft_candidates_um": [
+        7.473184999683173,
+        22.41955499904952,
+        13.451732999429714,
+        16.44100699930298,
+        37.36592499841587
+      ],
+      "peak_r2": 0.9999640442468068,
+      "valley_r2": 0.9999580056729012,
+      "data_metadata": {
+        "source": "/mnt/data/SiC_epitaxy_modeling_repo/data/raw/附件1.xlsx",
+        "n_points": 7468,
+        "wn_min": 400.1569,
+        "wn_max": 4000.122,
+        "reflectance_min": 0.636093383,
+        "reflectance_max": 95.38499492,
+        "fraction_above_100": 0.0,
+        "median_step": 0.4819999999999709,
+        "crop_min": 1500.0,
+        "crop_max": 4000.0,
+        "crop_n_points": 5185
+      }
+    },
+    "sic_15deg": {
+      "fft_candidates_um": [
+        7.49224363401775,
+        22.476730902053248,
+        26.9720770824639,
+        47.9503592577136
+      ],
+      "peak_r2": 0.9999351693377317,
+      "valley_r2": 0.9999361800563364,
+      "data_metadata": {
+        "source": "/mnt/data/SiC_epitaxy_modeling_repo/data/raw/附件2.xlsx",
+        "n_points": 7468,
+        "wn_min": 400.1569,
+        "wn_max": 4000.122,
+        "reflectance_min": 0.976744442,
+        "reflectance_max": 102.7393552,
+        "fraction_above_100": 0.03508302088912694,
+        "median_step": 0.4819999999999709,
+        "crop_min": 1500.0,
+        "crop_max": 4000.0,
+        "crop_n_points": 5185
+      }
+    }
+  },
+  "band_stability": [
+    {
+      "band": "primary",
+      "wn_min_cm1": 1500.0,
+      "wn_max_cm1": 4000.0,
+      "dataset": "sic_10deg",
+      "angle_deg": 10.0,
+      "n_points": 5185,
+      "fft_um": 7.473184999683173,
+      "peak_um": 7.489066885847301,
+      "valley_um": 7.491895441795338,
+      "hilbert_um": 7.489698365539103,
+      "method_median_um": 7.489382625693201,
+      "profiled_two_beam_um": 7.419658004525245,
+      "profiled_rmse": 0.16794442275591137,
+      "hilbert_r2": 0.9999583353801463,
+      "relative_to_consensus_pct": -0.821640201090794
+    },
+    {
+      "band": "primary",
+      "wn_min_cm1": 1500.0,
+      "wn_max_cm1": 4000.0,
+      "dataset": "sic_15deg",
+      "angle_deg": 15.0,
+      "n_points": 5185,
+      "fft_um": 7.49224363401775,
+      "peak_um": 7.463448270339051,
+      "valley_um": 7.454861431371982,
+      "hilbert_um": 7.457276324951839,
+      "method_median_um": 7.460362297645445,
+      "profiled_two_beam_um": 7.418429867890661,
+      "profiled_rmse": 0.20874613590976202,
+      "hilbert_r2": 0.9999355366800585,
+      "relative_to_consensus_pct": -0.8380566689323972
+    },
+    {
+      "band": "validation_1",
+      "wn_min_cm1": 1100.0,
+      "wn_max_cm1": 1500.0,
+      "dataset": "sic_10deg",
+      "angle_deg": 10.0,
+      "n_points": 830,
+      "fft_um": 15.330143726494136,
+      "peak_um": null,
+      "valley_um": null,
+      "hilbert_um": 7.124487675241808,
+      "method_median_um": 11.227315700867972,
+      "profiled_two_beam_um": 7.718028446768951,
+      "profiled_rmse": 0.2040014173594058,
+      "hilbert_r2": 0.9997629117298372,
+      "relative_to_consensus_pct": 3.1666691059093193
+    },
+    {
+      "band": "validation_1",
+      "wn_min_cm1": 1100.0,
+      "wn_max_cm1": 1500.0,
+      "dataset": "sic_15deg",
+      "angle_deg": 15.0,
+      "n_points": 830,
+      "fft_um": 18.390640291641486,
+      "peak_um": null,
+      "valley_um": null,
+      "hilbert_um": 7.1335676618173585,
+      "method_median_um": 12.762103976729422,
+      "profiled_two_beam_um": 7.930545897737787,
+      "profiled_rmse": 0.0695196157937617,
+      "hilbert_r2": 0.999769912602869,
+      "relative_to_consensus_pct": 6.007383893960102
+    },
+    {
+      "band": "validation_2",
+      "wn_min_cm1": 1800.0,
+      "wn_max_cm1": 2800.0,
+      "dataset": "sic_10deg",
+      "angle_deg": 10.0,
+      "n_points": 2074,
+      "fft_um": 7.432309743957099,
+      "peak_um": 7.376498146079485,
+      "valley_um": 7.41292728042874,
+      "hilbert_um": 7.411808252526127,
+      "method_median_um": 7.412367766477433,
+      "profiled_two_beam_um": 7.953432756547238,
+      "profiled_rmse": 0.18286810534303966,
+      "hilbert_r2": 0.9999396258580854,
+      "relative_to_consensus_pct": 6.313311891758135
+    },
+    {
+      "band": "validation_2",
+      "wn_min_cm1": 1800.0,
+      "wn_max_cm1": 2800.0,
+      "dataset": "sic_15deg",
+      "angle_deg": 15.0,
+      "n_points": 2074,
+      "fft_um": 7.451066244610489,
+      "peak_um": 7.3458249664299275,
+      "valley_um": 7.384266065263232,
+      "hilbert_um": 7.304849030932851,
+      "method_median_um": 7.36504551584658,
+      "profiled_two_beam_um": 8.148173759818787,
+      "profiled_rmse": 0.2633183888995678,
+      "hilbert_r2": 0.9999109940668917,
+      "relative_to_consensus_pct": 8.916409403568876
+    },
+    {
+      "band": "validation_3",
+      "wn_min_cm1": 2800.0,
+      "wn_max_cm1": 4000.0,
+      "dataset": "sic_10deg",
+      "angle_deg": 10.0,
+      "n_points": 2489,
+      "fft_um": 8.02408790229802,
+      "peak_um": 7.746795983480919,
+      "valley_um": 7.772412257432571,
+      "hilbert_um": 7.611022091916657,
+      "method_median_um": 7.7596041204567445,
+      "profiled_two_beam_um": 7.709786427072476,
+      "profiled_rmse": 0.20339983848458196,
+      "hilbert_r2": 0.9999801691145941,
+      "relative_to_consensus_pct": 3.0564982605107684
+    },
+    {
+      "band": "validation_3",
+      "wn_min_cm1": 2800.0,
+      "wn_max_cm1": 4000.0,
+      "dataset": "sic_15deg",
+      "angle_deg": 15.0,
+      "n_points": 2489,
+      "fft_um": 8.046069013858641,
+      "peak_um": 7.737873392545323,
+      "valley_um": 7.6040542174569765,
+      "hilbert_um": 7.593941293156068,
+      "method_median_um": 7.67096380500115,
+      "profiled_two_beam_um": 7.912390828531272,
+      "profiled_rmse": 0.2302127374000401,
+      "hilbert_r2": 0.9999286487685597,
+      "relative_to_consensus_pct": 5.76470559465849
+    }
+  ],
+  "joint_two_beam": {
+    "thickness_um": 7.419187985636658,
+    "success": true,
+    "metrics": {
+      "rmse": 0.18944699929585335,
+      "rss": 372.1810166726457,
+      "bic": -34383.8108992319,
+      "objective": 372.18101667190126
+    },
+    "parameters": {
+      "optimizer": "profiled_sine_cosine_scalar_search",
+      "fit_domain": "normalized_fringe",
+      "coarse_interval_um": [
+        4.1146192685208804,
+        10.847632617009593
+      ],
+      "linear_coefficients_sic_10deg": [
+        0.0019603505218017494,
+        0.010534673361569422,
+        -0.7902507569086239,
+        0.26154777199625634,
+        0.12256796353567255,
+        0.25428592404252637
+      ],
+      "linear_coefficients_sic_15deg": [
+        -0.0008199125231090749,
+        -0.04078372915721261,
+        -0.8274857914425122,
+        -0.1555583489867857,
+        -0.018994228409229815,
+        0.18634712973727957
+      ]
+    }
+  },
+  "joint_harmonic3": {
+    "thickness_um": 7.540677770226443,
+    "success": true,
+    "metrics": {
+      "rmse": 0.1406009893606244,
+      "rss": 205.00077822926318,
+      "bic": -40420.1854163504,
+      "objective": 205.00077822885316,
+      "n_parameters": 29.0
+    },
+    "parameters": {
+      "max_harmonic": 3,
+      "optimizer": "profiled_fourier_scalar_search",
+      "fit_domain": "normalized_fringe",
+      "search_interval_um": [
+        5.386410678790971,
+        9.575841206739504
+      ],
+      "coefficients_sic_10deg": {
+        "offset": 0.001499550986600996,
+        "linear_background": 0.006150255770029173,
+        "cos_1": -0.6364994259930389,
+        "sin_1": -0.5549935526992033,
+        "linear_cos_1": 0.09402828806596362,
+        "linear_sin_1": -0.11881726931919183,
+        "cos_2": -0.00828523412950089,
+        "sin_2": -0.009752533874292146,
+        "linear_cos_2": -0.013607857695157863,
+        "linear_sin_2": -0.018570858204800353,
+        "cos_3": -0.11197410652772787,
+        "sin_3": 0.12024633622802985,
+        "linear_cos_3": -0.09260277534174773,
+        "linear_sin_3": 0.020450686951724355
+      },
+      "coefficients_sic_15deg": {
+        "offset": -0.0002665193681901636,
+        "linear_background": -0.03699064565381818,
+        "cos_1": -0.2833619990490517,
+        "sin_1": -0.786708751897445,
+        "linear_cos_1": 0.2172039651688101,
+        "linear_sin_1": -0.1069288437463122,
+        "cos_2": -0.0008621596808149532,
+        "sin_2": -0.014645185446956102,
+        "linear_cos_2": -0.015661728127661454,
+        "linear_sin_2": 0.06267961069709709,
+        "cos_3": -0.1383238008486333,
+        "sin_3": -0.10655972290278347,
+        "linear_cos_3": 0.02356398481807697,
+        "linear_sin_3": -0.1011287428079716
+      }
+    }
+  },
+  "joint_tmm": {
+    "thickness_um": 7.406633254690582,
+    "success": true,
+    "metrics": {
+      "rmse": 0.28537456093998204,
+      "rss": 844.5186971285997,
+      "bic": -25923.75921007384
+    },
+    "parameters": {
+      "kappa_scale": 1.0,
+      "optimizer": "coarse_grid_plus_bounded_scalar",
+      "search_interval_um": [
+        5.564390989227493,
+        9.273984982045821
+      ],
+      "fit_domain": "normalized_fringe",
+      "calibration_sic_10deg": [
+        0.010060866550270808,
+        -0.023797888909638854,
+        -0.890376177268627,
+        0.07573858433253777
+      ],
+      "calibration_sic_15deg": [
+        0.013532660122263809,
+        -0.012811966821955956,
+        -0.888938932858588,
+        -0.08791059586567619
+      ]
+    }
+  },
+  "model_comparison": {
+    "delta_bic_two_minus_harmonic3": 6036.3745171185,
+    "delta_bic_two_minus_tmm": -8460.051689158063,
+    "harmonic3_correction_um": 0.12148978458978554,
+    "tmm_correction_um": -0.012554730946075843,
+    "interpretation": "BIC 差值为正表示右侧复杂模型优于双光束模型。"
+  },
+  "residual_diagnostics": {
+    "two_beam": {
+      "sic_10deg": {
+        "durbin_watson": 0.003205624130103119,
+        "ljung_box_q": 78497.40732478908,
+        "ljung_box_p": 0.0,
+        "acf_lag1": 0.997499046615768
+      },
+      "sic_15deg": {
+        "durbin_watson": 0.004964055439691481,
+        "ljung_box_q": 70234.23756627807,
+        "ljung_box_p": 0.0,
+        "acf_lag1": 0.9975036976808628
+      }
+    },
+    "harmonic3": {
+      "sic_10deg": {
+        "durbin_watson": 0.005444643018178003,
+        "ljung_box_q": 68714.84127695058,
+        "ljung_box_p": 0.0,
+        "acf_lag1": 0.9947956009285239
+      },
+      "sic_15deg": {
+        "durbin_watson": 0.007370782377224223,
+        "ljung_box_q": 60956.53003230857,
+        "ljung_box_p": 0.0,
+        "acf_lag1": 0.996311682213673
+      }
+    },
+    "tmm": {
+      "sic_10deg": {
+        "durbin_watson": 0.0016319918868826313,
+        "ljung_box_q": 88743.14164865005,
+        "ljung_box_p": 0.0,
+        "acf_lag1": 0.995569510644434
+      },
+      "sic_15deg": {
+        "durbin_watson": 0.002513305488654489,
+        "ljung_box_q": 84019.39564957046,
+        "ljung_box_p": 0.0,
+        "acf_lag1": 0.9981697011595618
+      }
+    }
+  }
+}
