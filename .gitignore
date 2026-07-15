@@ -15,3 +15,12 @@ data/interim/*
 data/processed/*
 data/synthetic/*
 !data/**/.gitkeep
+
+# LaTeX 构建中间文件
+LaTeX/*.aux
+LaTeX/*.bbl
+LaTeX/*.blg
+LaTeX/*.log
+LaTeX/*.out
+LaTeX/*.toc
+LaTeX/*.synctex.gz
