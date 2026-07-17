@@ -2,7 +2,7 @@
 
 \usepackage[framemethod=TikZ]{mdframed}
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta,calc}
+\usetikzlibrary{arrows.meta,calc,positioning,shapes.geometric,fit,backgrounds}
 \usepackage{url}
 \usepackage{subcaption}
 \usepackage{geometry}
@@ -16,6 +16,11 @@
 \usepackage{longtable}
 \usepackage{booktabs}
 \graphicspath{{figures/}}
+% 兼容 Pandoc 生成的紧凑列表命令
+\providecommand{\tightlist}{%
+	\setlength{\itemsep}{0pt}%
+	\setlength{\parskip}{0pt}%
+}
 
 % 中文章节交叉引用（类文件仅定义了 figure/table/equation）
 \crefformat{section}{#2第#1节#3}
@@ -32,15 +37,22 @@
 % 摘要（模板：待定稿）
 % ======================================================================
 \begin{abstract}
-碳化硅（SiC）与硅（Si）外延层的厚度是衡量半导体器件质量的关键指标，红外干涉光谱法凭借其非接触、无损、快速的优势成为主流测量手段。本文围绕外延层厚度反演问题，建立了从\textbf{双光束干涉}到\textbf{含吸收多光束（Airy/TMM）干涉}的逐级扩展模型，提出“修正波数域—多方案并行估计—双角度联合约束—多光束判定与修正”的总体求解框架，并对附件 1--4 给出可复现的厚度结果与不确定度区间。
+碳化硅与硅外延层的厚度是衡量半导体器件质量的关键指标，红外干涉法凭借非接触、无损、快速的优势成为其主流测量手段，但反演精度依赖于对折射率色散、斜入射与多光束干涉的准确建模。本文围绕外延层厚度反演，建立从双光束干涉到含吸收多光束（Airy/TMM）干涉的逐级机理模型，并提出“修正波数域—多方案并行估计—双角度联合约束—多光束判定与修正”的求解框架，对四组光谱给出可复现的厚度与不确定度。
 
-\textbf{针对数据分析与预处理：} 本文将反射率分解为慢变基线、振幅包络与干涉条纹三部分，采用 Hampel 异常点剔除、Savitzky--Golay 轻度平滑、稳健多项式基线与包络归一化构造标准化条纹，并依据材料声子共振与色散特征划分有效拟合频段（SiC 取 $1500\sim4000\ \mathrm{cm^{-1}}$，Si 取 $550\sim3500\ \mathrm{cm^{-1}}$）。
+\textbf{针对数据预处理}，将反射率分解为慢变基线、振幅包络与干涉条纹三部分，经 Hampel 剔除异常、Savitzky--Golay 平滑、稳健基线估计与包络归一化得到标准化条纹，并依据声子共振与色散特征选取有效拟合频段（碳化硅 $1500\sim4000\ \mathrm{cm^{-1}}$，硅 $550\sim3500\ \mathrm{cm^{-1}}$）。
 
-\textbf{针对问题一：} 由斯涅尔定律定义修正波数 $x_\theta(\tilde\nu)=\tilde\nu\sqrt{n_1^2(\tilde\nu)-\sin^2\theta_0}$，同时吸收折射率色散与斜入射光程修正，建立双光束反射率模型 $R=A+B\cos(4\pi d x_\theta+\phi_0)+\varepsilon$，并给出相邻同类极值、峰级次稳健回归与 Hilbert 相位三种等价厚度反演关系。
+\textbf{针对问题一}，由斯涅尔定律定义修正波数 $x_\theta=\tilde\nu\sqrt{n_1^2-\sin^2\theta_0}$，将折射率色散与斜入射光程修正并入干涉相位，建立双光束反射率模型 $R=A+B\cos(4\pi d x_\theta+\phi_0)+\varepsilon$，并导出相邻极值间距、极值级次回归与连续相位斜率三种互补的厚度反演关系。
 
-\textbf{针对问题二、三：} （待定稿）综合 FFT 初值、峰级次回归、双角度联合拟合与 Hilbert 相位交叉验证，得到碳化硅外延层厚度约 $7.48\,\mu\mathrm m$；通过谐波、峰谷分离、可见度与 BIC 的联合判定确认硅数据存在显著多光束干涉，经基频隔离后得到硅外延层厚度约 $3.47\,\mu\mathrm m$。
+\textbf{针对问题二}，在修正波数域以 FFT 确定基频与初值，再由峰级次 Huber 回归、谷级次回归与 Hilbert 相位法分别估计厚度，对 $10^\circ$、$15^\circ$ 两角度结果取稳健中位数融合，得\textbf{碳化硅外延层厚度 $\widehat d_{\mathrm{SiC}}=7.48\ \mu\mathrm{m}$}（$95\%$ 置信区间 $[7.458,\,7.492]\ \mu\mathrm{m}$，双角度相对差 $0.43\%$）。
+
+\textbf{针对问题三}，由多次反射光的复振幅几何级数建立含吸收、偏振与 Fresnel 系数的 Airy/TMM 模型，并从高阶光束幅值、相干长度、仪器分辨率与空间相位展宽给出多光束的可观测条件。以峰谷厚度差、二次谐波比、条纹可见度及模型比较（BIC）联合判定：附件 3、4（硅）三项指标（$1.84\%$、$0.067$、$0.65$）均超过阈值，存在显著多光束干涉，经基频隔离与双角度峰级次回归得\textbf{硅外延层厚度 $\widehat d_{\mathrm{Si}}=3.47\ \mu\mathrm{m}$}（$95\%$ 置信区间 $[3.450,\,3.520]\ \mu\mathrm{m}$）；附件 1、2（碳化硅）三项指标均低于阈值，多光束影响小于总体不确定度，厚度无需修正。
+
+最后，本文以多方法、双角度的结果一致性而非单一拟合来判断可靠性，并用分块 Bootstrap 与参数敏感性量化不确定度，使结论稳健、可复现。
+
+
 
 \keywords{\textbf{红外干涉光谱\quad 修正波数\quad 双光束干涉\quad 多光束干涉\quad 厚度反演}}
+
 \end{abstract}
 
 % ======================================================================
@@ -48,7 +60,9 @@
 % ======================================================================
 \section{问题重述}
 \subsection{问题背景}
-碳化硅、硅等半导体外延材料的性能与其外延层厚度密切相关。红外干涉法通过测量样品在中红外波段的反射率光谱，利用外延层上下界面反射光之间的干涉条纹反演厚度，是一种非接触、无损、高效的检测手段。
+碳化硅（SiC）是继硅之后发展迅速的第三代宽禁带半导体材料，具有禁带宽、击穿场强高、热导率大等优点，广泛应用于电力电子、轨道交通与新能源汽车等领域；硅（Si）则是传统半导体工业的基础。外延工艺是半导体器件制造的关键环节，外延层厚度直接影响器件的导通电阻、击穿电压与整体性能，因此准确测量外延层厚度对科研与产业质量控制都具有重要意义。
+
+红外干涉法是外延层厚度测量的主流手段之一\upcite{astmf1391,born2019principles}。其原理是：一束红外光照射到样品上时，会在外延层上表面与外延层—衬底界面处分别发生反射，两束反射光相干叠加，使反射率光谱随波数呈现交替相长相消的干涉条纹\upcite{tolansky1973introduction}。条纹的周期与外延层的光学厚度直接相关，因此可由反射光谱无损反演厚度。该方法具有非接触、无损、快速的优点，但反演精度依赖于对材料折射率色散、入射角以及多光束干涉等因素的准确建模。
 
 \subsection{问题提出}
 题目提供四组红外反射光谱数据，第一列为波数（$\mathrm{cm^{-1}}$），第二列为反射率（\%）。其中附件 1、2 为同一 SiC 晶圆在 $10^\circ$、$15^\circ$ 入射角下的测量结果，附件 3、4 为同一 Si 晶圆在相同两个角度下的测量结果。需依次解决：
@@ -63,7 +77,55 @@
 % 2 问题分析（模板）
 % ======================================================================
 \section{问题分析}
-外延层厚度反演的核心是把干涉条纹的周期与光学厚度联系起来。随着入射角与折射率色散的引入，简单的等波数间隔关系不再成立，需引入修正波数统一处理色散与斜入射；当界面反射较强、吸收较弱时，高阶内部反射不可忽略，双光束正弦模型应扩展为含吸收的多光束 Airy 模型。因此本文采用机理模型逐级扩展、多方案并行估计并相互验证的思路（详见后文各章）。
+外延层厚度反演的核心，是把干涉条纹的周期与外延层的光学厚度联系起来。三个问题在物理上逐级递进（由双光束到多光束、由理想正弦到含吸收非正弦），在算法上则共享统一的预处理与修正波数框架。
+
+\subsection{问题一的分析}
+问题一要求在仅考虑上、下界面各一次反射的双光束条件下建立厚度模型。红外光在空气—外延层界面直接反射，另一束折射进入后于外延层—衬底界面反射返回，两束光的光程差为 $2n_1 d\cos\theta_1$，叠加成随波数相长相消的干涉条纹，其周期由光学厚度决定。难点在于折射率随波数色散、斜入射又引入 $\cos\theta_1$ 因子，使条纹在原始波数轴上不再等间隔，直接反演会产生系统偏差。为此引入修正波数 $x_\theta=\tilde\nu\sqrt{n_1^2-\sin^2\theta_0}$，将色散与斜入射一并并入相位的线性项，使条纹近似等周期，并据此导出相邻极值间距、极值级次回归与连续相位斜率三类互补的厚度反演关系，作为问题二、三的共同基础。
+
+\subsection{问题二的分析}
+问题二要求由附件 1、2（碳化硅，$10^\circ$、$15^\circ$）计算厚度。仅用一对相邻条纹按 $d=1/(2\Delta x)$ 计算对峰位误差和噪声敏感，而碳化硅在 $800\sim1100\ \mathrm{cm^{-1}}$ 的剩余射线带折射率剧烈色散、不适用实折射率模型，故需在避开强色散区的同时充分利用全部条纹信息。为此，先在有效频段 $1500\sim4000\ \mathrm{cm^{-1}}$ 内以 FFT 确定基频与初值，再用峰级次 Huber 回归、谷级次回归与 Hilbert 相位法，从离散极大值、极小值与全谱相位三方面独立估计厚度；三者失效模式不同，其一致性可直接反映结果的可靠性。最后依据同一晶圆两角度厚度相同的约束，对各结果取稳健中位数融合，以削弱单一角度或方法的系统偏差。
+
+\subsection{问题三的分析}
+问题三分析多光束干涉，需推导其可观测条件、判定附件 3、4（硅）是否显著存在，并据此求硅厚度，同时复核碳化硅。当两界面反射较强、吸收较弱时，层内多次往返的高阶反射光不可忽略，双光束模型应扩展为由复振幅几何级数求和得到的含吸收 Airy 模型（等价于传输矩阵法），其反射率关于往返相位为非正弦周期函数，产生高次谐波并使峰谷变尖。值得注意的是，存在多光束并不意味着厚度必然失真：弱吸收且界面参数缓变时，Airy 波形的基本相位周期仍由光学厚度决定，多光束主要改变波形而非基频。因此判定不宜仅凭条纹对比度，而联合峰谷厚度差、二次谐波比、条纹可见度与模型比较（BIC）综合判断；求解则先隔离基频、抑制高次谐波，再对基频信号作双角度峰级次回归，从而在衬底复折射率与吸收未知时稳健反演硅厚度，并以同一框架复核碳化硅。
+
+综合来看，本文采用“机理模型逐级扩展、多方案并行估计、双角度联合约束、多光束判定与修正”的总体思路，总体技术路线如\cref{fig:roadmap} 所示。
+
+\begin{figure}[htbp]
+	\centering
+	\begin{tikzpicture}[
+		font=\small,
+		io/.style   ={draw, rounded corners=2pt, fill=blue!6,   align=center, inner sep=5pt, text width=9.0cm},
+		proc/.style ={draw, rounded corners=2pt, fill=gray!8,   align=center, inner sep=5pt, text width=9.0cm},
+		half/.style ={draw, rounded corners=2pt, fill=gray!8,   align=center, inner sep=5pt, text width=6.1cm},
+		res/.style  ={draw, rounded corners=2pt, fill=green!12,  align=center, inner sep=5pt, text width=3.4cm},
+		arr/.style  ={-Stealth, thick},
+		node distance=3.2mm
+	]
+		\node[io]   (in)   {附件 1--4：红外反射光谱 $(\tilde\nu,\,R)$};
+		\node[proc] (pre)  [below=of in]  {数据分析与预处理\\ 异常剔除 $\cdot$ 轻度平滑 $\cdot$ 基线与包络归一化 $\cdot$ 有效频段选取};
+		\node[proc] (cw)   [below=of pre] {修正波数映射\quad $x_\theta=\tilde\nu\sqrt{n_1^2-\sin^2\theta_0}$};
+		\node[proc] (q1)   [below=of cw]  {问题一：双光束干涉模型\\ $R=A+B\cos(4\pi d\,x_\theta+\phi_0)$，三类厚度反演关系};
+		\node[half] (q2)   [below=10mm of q1, xshift=-40mm] {问题二（SiC）\\ FFT 基频识别 $\to$ 峰/谷级次、Hilbert 相位\\ 双角度稳健中位数融合};
+		\node[half] (q3)   [below=10mm of q1, xshift=40mm]  {问题三\\ 含吸收 Airy/TMM 多光束模型\\ 多证据判定 $E_{pv},H_2/H_1,V,\mathrm{BIC}$};
+		\node[res]  (dsic) [below=6mm of q2] {$\widehat d_{\mathrm{SiC}}\approx 7.48\,\mu\mathrm m$};
+		\node[half] (q3b)  [below=6mm of q3] {硅：基频隔离 + 双角度峰级次\\ 碳化硅多光束复核（无需实质修正）};
+		\node[res]  (dsi)  [below=5mm of q3b] {$\widehat d_{\mathrm{Si}}\approx 3.47\,\mu\mathrm m$};
+		\node[proc] (rel)  [below=9mm of dsi, xshift=-40mm] {结果可靠性与模型评价\\ 连续块 Bootstrap $\cdot$ 参数与频段敏感性 $\cdot$ 双角度一致性};
+
+		\draw[arr] (in)--(pre);
+		\draw[arr] (pre)--(cw);
+		\draw[arr] (cw)--(q1);
+		\draw[arr] (q1.south) -- ++(0,-6mm) -| (q2.north);
+		\draw[arr] (q1.south) -- ++(0,-6mm) -| (q3.north);
+		\draw[arr] (q2)--(dsic);
+		\draw[arr] (q3)--(q3b);
+		\draw[arr] (q3b)--(dsi);
+		\draw[arr] (dsic.south) |- (rel.west);
+		\draw[arr] (dsi.south)  |- (rel.east);
+	\end{tikzpicture}
+	\caption{本文总体建模与求解技术路线}
+	\label{fig:roadmap}
+\end{figure}
 
 % ======================================================================
 % 3 模型假设与符号说明（模板）
@@ -75,7 +137,8 @@
 	\item[(2)] 测量区域内外延层厚度近似恒定，上下界面近似平行；
 	\item[(3)] 空气折射率取 $n_0=1$，外延层折射率 $n_1(\tilde\nu)$ 允许随波数变化；
 	\item[(4)] 单个波数附近光源具有足够的相干长度；
-	\item[(5)] 界面粗糙度、晶圆翘曲与仪器线形暂不进入主模型，仅在敏感性分析中考虑。
+	\item[(5)] 题目未提供入射光偏振信息，主模型按非偏振光处理，对 $s$、$p$ 偏振反射率等权平均；
+	\item[(6)] 界面粗糙度、晶圆翘曲与仪器线形暂不进入主模型，仅在敏感性分析中考虑。
 \end{itemize}
 
 \subsection{符号说明}
@@ -135,7 +198,7 @@
 	\item[(1)] \textbf{采样间隔}。四组数据波数间隔的中位数约为 $0.482\ \mathrm{cm^{-1}}$，采样密度足够刻画中红外条纹，不构成分辨率瓶颈；但间隔并非严格等距，故所有频域运算前需将信号插值到等间距网格。
 	\item[(2)] \textbf{附件 2 的超量程反射率}。附件 2 约有 $3.508\%$ 的反射率超过 $100\%$，这源于测量标定或归一化偏差。若直接硬截断，会削平条纹峰并改变峰位。本文将其写为标定关系
 	\begin{equation}
-		R_{\mathrm{obs}}=g\,R_{\mathrm{model}}+c+\varepsilon
+		R_{\mathrm{obs}}=g\,R_{\mathrm{model}}+c+\varepsilon.
 		\label{eq:calib}
 	\end{equation}
 	通过增益 $g$、偏置 $c$ 以及后续基线—包络归一化吸收该偏差，而不做截断。
@@ -147,21 +210,18 @@
 
 对 SiC，其横光学（TO）声子约在 $797.7\ \mathrm{cm^{-1}}$、纵光学（LO）声子约在 $992.1\ \mathrm{cm^{-1}}$，$800\sim1100\ \mathrm{cm^{-1}}$ 为剩余射线强反射带，折射率剧烈色散甚至出现负介电区，简单模型失效。因此本文取
 
-\begin{equation}
-	\text{SiC 主拟合频段：}\quad 1500\sim4000\ \mathrm{cm^{-1}}
-\end{equation}
+	$$\text{SiC 主拟合频段：}\quad 1500\sim4000\ \mathrm{cm^{-1}}$$
 
 并以 $1100\sim1500\ \mathrm{cm^{-1}}$ 作为辅助验证区间，$800\sim1100\ \mathrm{cm^{-1}}$ 仅在需要复介电函数时使用。对 Si，中红外无强声子吸收，透明窗口宽，取
 
-\begin{equation}
-	\text{Si 主拟合频段：}\quad 550\sim3500\ \mathrm{cm^{-1}}
-\end{equation}
+
+	$$\text{Si 主拟合频段：}\quad 550\sim3500\ \mathrm{cm^{-1}}$$
 
 \cref{fig:raw_overview} 给出四组原始光谱的总体形态，与上述频段选取一致：SiC 在 $800\sim1100\ \mathrm{cm^{-1}}$ 的剩余射线带（红色阴影）反射率接近饱和且不含有效条纹，主频段（绿色）内则呈现清晰的小幅正弦条纹；Si 无强声子吸收，透明窗口内条纹幅度较大、周期规则，可在较宽频段内反演。
 
 \begin{figure}[!htbp]
 	\centering
-	\includegraphics[width=\textwidth]{raw_overview}
+	\includegraphics[width=0.9\textwidth]{raw_overview}
 	\caption{附件 1--4 原始反射光谱总体形态与频段划分（红色：SiC 强反射带；绿色：主拟合频段）}\label{fig:raw_overview}
 \end{figure}
 
@@ -187,14 +247,14 @@
 本文将测得反射率分解为三个尺度成分：
 
 \begin{equation}
-	R(\tilde\nu)=\underbrace{A(\tilde\nu)}_{\text{慢变基线}}+\underbrace{B(\tilde\nu)}_{\text{振幅包络}}\,y(\tilde\nu)+\varepsilon(\tilde\nu)
+	R(\tilde\nu)=\underbrace{A(\tilde\nu)}_{\text{慢变基线}}+\underbrace{B(\tilde\nu)}_{\text{振幅包络}}\,y(\tilde\nu)+\varepsilon(\tilde\nu).
 	\label{eq:decomp}
 \end{equation}
 
 其中 $A$ 描述平均反射率、仪器背景与慢变吸收，$B$ 描述条纹振幅随波数的缓变，$y$ 为归一化条纹，$\varepsilon$ 为噪声。预处理即依次估计并剥离 $A$、$B$，得到便于峰检测、FFT 与 Hilbert 变换的标准化条纹。处理链共四步。
 
 \paragraph{（1）异常点剔除。}
-采用 Hampel 方法：以窗口长度 $7$ 计算局部中位数与稳健标准差（MAD），将偏离超过 $3.5$ 倍稳健标准差的点判为孤立异常并以局部中位数替换。该方法只修正孤立跳变，不改变连续条纹。附件 1--4 分别检出 $13$、$21$、$4$、$5$ 个异常点。
+采用 Hampel 方法\upcite{hampel1974influence}：以窗口长度 $7$ 计算局部中位数与稳健标准差（MAD），将偏离超过 $3.5$ 倍稳健标准差的点判为孤立异常并以局部中位数替换。该方法只修正孤立跳变，不改变连续条纹。附件 1--4 分别检出 $13$、$21$、$4$、$5$ 个异常点。
 
 \paragraph{（2）轻度平滑。}
 采用 Savitzky--Golay 滤波\upcite{savitzky1964smoothing}，以窗口 $21$、多项式阶数 $3$ 在最小二乘意义下局部拟合，抑制高频噪声同时保留峰形。窗口不能过大，否则会造成峰位偏移、尖锐谷值被抹平、相邻条纹合并以及多光束高次谐波被误删。本文在 $11,21,31,41$ 等窗口中以厚度结果稳定性择优，最终取 $21$。
@@ -206,29 +266,61 @@
 由\cref{eq:decomp} 构造标准化条纹
 
 \begin{equation}
-	z(\tilde\nu)=\frac{R(\tilde\nu)-\widehat A(\tilde\nu)}{\widehat B(\tilde\nu)}
+	z(\tilde\nu)=\frac{R(\tilde\nu)-\widehat A(\tilde\nu)}{\widehat B(\tilde\nu)}.
 	\label{eq:zfringe}
 \end{equation}
 
-其理想形态为零均值、单位振幅的余弦条纹。峰值检测、FFT 与 Hilbert 变换均在 $z(\tilde\nu)$ 上进行，从而使结果对慢变背景与振幅漂移不敏感。\cref{fig:preprocess} 给出 SiC（附件 1）与 Si（附件 3）主频段的预处理效果，可见基线—包络剥离后条纹被有效标准化。
+其理想形态为零均值、单位振幅的余弦条纹。峰值检测、FFT 与 Hilbert 变换均在 $z(\tilde\nu)$ 上进行，从而使结果对慢变背景与振幅漂移不敏感。\cref{fig:preprocess} 给出碳化硅与硅在主频段的预处理效果：原始光谱（灰）经平滑后（蓝/绿）与稳健基线 $A$（红色虚线）、振幅包络 $A\pm B$（橙色带）分离，条纹得以有效标准化。
 
-\begin{figure}[!htbp]
+\begin{figure}[htbp]
 	\centering
-	\begin{subfigure}[b]{0.48\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{preprocess_sic_10deg}
-		\caption{SiC，附件 1，$10^\circ$}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.48\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{preprocess_si_10deg}
-		\caption{Si，附件 3，$10^\circ$}
-	\end{subfigure}
-	\caption{主频段光谱预处理与标准化条纹}\label{fig:preprocess}
+	\includegraphics[width=0.94\textwidth]{preprocess}
+	\caption{主频段光谱预处理：慢变基线与振幅包络的分离（左：碳化硅，右：硅）}\label{fig:preprocess}
 \end{figure}
 
 经过上述四步处理，预处理在剔除异常、抑制噪声的同时保留了条纹的周期与峰位信息，为后续各章的厚度反演提供了统一、稳健的输入。
+
+\subsection{折射率色散模型}
+\label{subsec:dispersion}
+后续修正波数 $x_\theta$ 的计算依赖外延层折射率 $n_1(\tilde\nu)$，因此在建模前先给出两种材料的折射率色散模型。
+
+碳化硅在中红外存在强晶格声子共振，采用单声子 TO--LO 因子化介电函数\upcite{spitzer1959infrared}
+\begin{equation}
+	\varepsilon(\tilde\nu)
+	=
+	\varepsilon_\infty
+	\frac{
+		\tilde\nu_{LO}^2-\tilde\nu^2-\mathrm i\gamma\tilde\nu
+	}{
+		\tilde\nu_{TO}^2-\tilde\nu^2-\mathrm i\gamma\tilde\nu
+	},
+	\qquad
+	\widetilde n(\tilde\nu)=\sqrt{\varepsilon(\tilde\nu)}
+	\label{eq:sic_dielectric}
+\end{equation}
+其中 $\varepsilon_\infty=6.52$，横光学声子 $\tilde\nu_{TO}=797.7\ \mathrm{cm^{-1}}$，纵光学声子 $\tilde\nu_{LO}=992.1\ \mathrm{cm^{-1}}$，阻尼 $\gamma=4.0\ \mathrm{cm^{-1}}$。硅在中红外无强声子吸收，采用中红外 Sellmeier 型经验色散\upcite{li1980refractive}
+\begin{equation}
+	n^2(\lambda)
+	=
+	11.67316
+	+
+	\frac{1}{\lambda^2}
+	+
+	\frac{0.004482633}{
+		\lambda^2-1.108205^2
+	},
+	\qquad
+	\lambda=\frac{10^4}{\tilde\nu}\ (\mu\mathrm m)
+	\label{eq:si_dispersion}
+\end{equation}
+
+两种材料折射率随波数的变化如\cref{fig:refractive_index} 所示。碳化硅折射率在 $800\sim1100\ \mathrm{cm^{-1}}$ 的剩余射线带内剧烈变化，消光系数 $\kappa_1$ 显著（对应强吸收与强反射），该区间不适用实折射率双光束模型；在 $1500\ \mathrm{cm^{-1}}$ 以上折射率趋于平缓（$n_1\approx2.5$），适合作为主拟合频段。硅折射率在整个中红外仅缓慢单调变化（$n_1\approx3.42$），故可在更宽频段内反演。这与\cref{subsec:dispersion} 之前的频段选取相互印证。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.9\textwidth]{refractive_index}
+	\caption{碳化硅与硅的折射率色散模型（红色：剩余射线带；绿色：主拟合频段）}\label{fig:refractive_index}
+\end{figure}
 
 % ======================================================================
 % 5 问题一：一次反射条件下的双光束干涉模型
@@ -349,87 +441,884 @@
 由于两个角度的相位、背景与振幅各不相同，其反射率不能直接平均；合理的做法是共享厚度、分别拟合角度特有参数，这也是后续双角度一致性检验的基础。
 
 \subsection{厚度反演关系}
-由模型\cref{eq:twobeam} 出发，可导出三种相互独立而互补的厚度反演关系。在修正波数横轴上，相位每增加 $2\pi$ 对应一个条纹周期。
+\label{subsec:thickness_inversion_relation}
 
-\paragraph{（1）相邻同类极值法。}
-相邻峰—峰或谷—谷之间相位恰增加 $2\pi$：
-
+由双光束反射率模型可知，经基线校正和包络归一化后，标准化干涉信号在修正波数域内近似满足
 \begin{equation}
-	4\pi d\,(x_{m+1}-x_m)=2\pi\;\Longrightarrow\;d=\frac{1}{2(x_{m+1}-x_m)}=\frac{1}{2\Delta x}
-	\label{eq:adj}
+	z(x_\theta)
+	=
+	\cos\!\left(
+	4\pi d x_\theta+\phi_0
+	\right)
+	+
+	\varepsilon(x_\theta),
+	\label{eq:normalized_interference_signal}
+\end{equation}
+其中，$d$ 为外延层厚度，$\phi_0$ 为初始相位，$\varepsilon(x_\theta)$ 为测量噪声及模型误差。由式 \eqref{eq:normalized_interference_signal} 可知，外延层厚度决定干涉相位关于修正波数的变化速率，因此厚度反演的本质是由条纹周期、极值级次或连续相位斜率估计参数 $d$。
+
+\subsubsection{相邻同类极值间距关系}
+
+设第 $m$ 个同类极值对应的修正波数为 $x_m$。峰值和谷值的相位条件可统一表示为
+\begin{equation}
+	4\pi d x_m+\phi_0
+	=
+	2\pi m+\delta,
+	\label{eq:extremum_phase_condition}
+\end{equation}
+其中，峰值对应 $\delta=0$，谷值对应 $\delta=\pi$。
+
+对于相邻两个同类极值 $x_m$ 和 $x_{m+1}$，由式 \eqref{eq:extremum_phase_condition} 分别写出相位条件并作差，可得
+\begin{equation}
+	4\pi d
+	\left(
+	x_{m+1}-x_m
+	\right)
+	=
+	2\pi.
+	\label{eq:adjacent_same_extrema_phase_difference}
 \end{equation}
 
-需要注意，峰到相邻谷只对应 $\pi$ 的相位差（半个周期），不能将峰—谷当作一个完整周期；当折射率随波数变化明显时，应使用 $\Delta x$ 而非 $\Delta\tilde\nu$。若 $x$ 以 $\mathrm{cm^{-1}}$ 为单位，则 $d$ 的量纲为 cm，换算为 $\mu\mathrm m$ 时需乘以 $10^4$。
-
-\paragraph{（2）峰级次稳健回归。}
-只用一对极值易受峰位误差影响。对全部同类极值依次编号 $m_j=0,1,\ldots,M-1$，则
-
+因此，外延层厚度满足
 \begin{equation}
-	m_j=2d\,x_j+b+\varepsilon_j
-	\label{eq:order}
+	d
+	=
+	\frac{1}{
+		2\left(
+		x_{m+1}-x_m
+		\right)
+	}
+	=
+	\frac{1}{2\Delta x}.
+	\label{eq:thickness_adjacent_same_extrema}
 \end{equation}
 
-截距 $b$ 自动吸收未知绝对干涉级次、起始极值的编号平移与反射附加相位。以最小二乘（或 Huber、Theil--Sen 等稳健回归\upcite{huber1964robust}）拟合，斜率为 $\beta=2d$，故
+式 \eqref{eq:thickness_adjacent_same_extrema} 表明，在修正波数域内，外延层厚度与相邻同类条纹间距成反比。厚度越大，干涉相位随修正波数变化越快，条纹越密集。
 
+需要注意的是，相邻峰值与谷值之间的相位差仅为 $\pi$（半个干涉周期），对应 $d=1/(4\Delta x_{pv})$，其中 $\Delta x_{pv}$ 为相邻峰谷的修正波数间距，不能与式 \eqref{eq:thickness_adjacent_same_extrema} 混用。
+
+
+\subsubsection{多极值级次线性关系}
+
+仅利用一对相邻极值进行计算时，厚度结果容易受到局部峰位误差影响。为充分利用全部条纹信息，对同类极值依次编号为
+\[
+m=0,1,\ldots,M-1.
+\]
+
+由式 \eqref{eq:extremum_phase_condition} 整理可得
 \begin{equation}
-	d=\frac{\beta}{2}
-	\label{eq:dslope}
+	m
+	=
+	2d x_m+b,
+	\label{eq:extremum_order_linear_relation}
+\end{equation}
+其中截距 $b=(\phi_0-\delta)/2\pi$ 综合吸收了初始干涉级次、界面反射附加相位以及极值编号起点的影响，而直线斜率仅由外延层厚度决定。设线性拟合斜率为 $\beta$，则 $\beta=2d$，从而
+\begin{equation}
+	d=\frac{\beta}{2}.
+	\label{eq:thickness_from_order_slope}
 \end{equation}
 
-若某相邻级次差异常大于 $1$，可据此判断是否漏检峰并修正编号，从而对漏峰与异常峰稳健。
+相比相邻极值间距法，式 \eqref{eq:thickness_from_order_slope} 同时利用多个峰值或谷值，可以通过整体斜率减弱单个极值定位误差对厚度结果的影响。问题一在此仅建立其理论关系，实际数据中的稳健回归、漏峰识别和级次修正将在问题二中进一步说明。
 
-\paragraph{（3）Hilbert 相位法。}
-在等间隔修正波数轴上，对基频条纹 $y(x)$ 构造解析信号
+\subsubsection{连续相位斜率与干涉基频关系}
 
+由双光束干涉相位模型
 \begin{equation}
-	z(x)=y(x)+i\,\mathcal H[y(x)]
-	\label{eq:analytic}
+	\Phi(x_\theta)
+	=
+	4\pi d x_\theta+\phi_0
+	\label{eq:linear_phase_relation}
+\end{equation}
+对修正波数求导，可得
+\begin{equation}
+	\frac{\mathrm d\Phi}{\mathrm d x_\theta}
+	=
+	4\pi d.
+	\label{eq:phase_derivative_relation}
 \end{equation}
 
-其中 $\mathcal H$ 为 Hilbert 变换。展开相位 $\phi(x)=\operatorname{unwrap}\arg z(x)$，由模型应满足 $\phi(x)=4\pi d\,x+\phi_0$，故
-
+因此，厚度还可以表示为
 \begin{equation}
-	d=\frac{1}{4\pi}\frac{\mathrm d\phi}{\mathrm dx}
-	\label{eq:hilbert}
+	d
+	=
+	\frac{1}{4\pi}
+	\frac{\mathrm d\Phi}{\mathrm d x_\theta}.
+	\label{eq:thickness_from_phase_slope}
 \end{equation}
 
-该方法不依赖单个峰位，而是利用全谱相位信息，可作为峰级次法的独立交叉验证。在实测数据中，SiC 与 Si 的 Hilbert 相位回归 $R^2$ 均超过 $0.999$，说明“相位对修正波数近似线性”这一假设成立。
+式 \eqref{eq:thickness_from_phase_slope} 表明，只要能够从实测信号中提取连续相位，并估计相位关于修正波数的斜率，即可反演外延层厚度。问题二中的 Hilbert 相位法即为该关系的数值实现。
 
-上述三种方法与 FFT 初值一起，构成“初值—独立估计—相位验证”的多方案体系；不同方法结果的一致程度，可作为厚度反演可靠性的判据。综上，问题一的核心模型由\cref{eq:twobeam}、\cref{eq:xtheta} 及厚度反演关系\cref{eq:adj} 给出，后续各章均以此为基础展开。
+等价地，将式 \eqref{eq:normalized_interference_signal} 写成 $\cos(2\pi f_x x_\theta+\phi_0)$ 形式，可得修正波数域的干涉基频 $f_x=2d$；当 $d$ 以 $\mu\mathrm{m}$、$x_\theta$ 以 $\mathrm{cm}^{-1}$ 计时 $d=\tfrac{1}{2}f_x\times10^4$，此即问题二中 FFT 基频识别的依据。考虑到有限观测区间的频谱泄漏，FFT 主要用于确定基频位置和厚度初值，最终厚度由级次回归和连续相位回归精化。
+
+综上，相邻同类极值间距 $d=1/(2\Delta x)$、极值级次斜率 $d=\beta/2$ 与连续相位斜率 $d=\tfrac{1}{4\pi}\,\mathrm d\Phi/\mathrm d x_\theta$ 这三类关系，分别从条纹间距、极值级次和连续相位表征同一物理量，并非相互独立的物理模型，而是双光束相位模型的不同数学表达。问题二将据此构造 FFT 基频识别、峰谷级次稳健回归和 Hilbert 相位回归算法，并利用两个入射角的数据作一致性检验。
+
 
 % ======================================================================
 % 6 问题二：碳化硅外延层厚度求解（待定稿）
 % ======================================================================
 \section{问题二：碳化硅外延层厚度求解}
-% TODO: 6.1 修正波数域的干涉基频提取
-% TODO: 6.2 基于基频信号的三种厚度估计
-% TODO: 6.3 双角度结果融合与厚度确定
-\textit{（本章待定稿。）}
+在问题一建立的修正波数相位—厚度关系基础上，问题二利用附件 1、2 中入射角为 $10^\circ$、$15^\circ$ 的碳化硅光谱构造稳定的数值反演方法。考虑到实际光谱受折射率色散、有限观测区间、慢变基线、振幅衰减及局部异常点影响，本文不以单对条纹间距计算厚度，而采用“修正波数映射—基频识别与重构—多方法独立估计—双角度稳健融合”的路线：先将厚度信息集中到修正波数域的基本干涉频率，再分别用离散极值和连续相位估计该基本周期，以降低单一局部特征对结果的影响。
 
-% ======================================================================
-% 7 问题三：多光束干涉判定与厚度修正（待定稿）
-% ======================================================================
+\subsection{修正波数映射与均匀重采样}
+\label{subsec:q2_corrected_wavenumber}
+
+根据问题一，入射角为 $\theta$ 时修正波数 $x_\theta=\tilde\nu\sqrt{n_1^2-\sin^2\theta}$（式 \eqref{eq:xtheta}）将折射率色散与斜入射引起的相位非线性统一吸收，使干涉相位在该坐标下满足
+\begin{equation}
+	\Phi(x_\theta)
+	=
+	4\pi d_{\mathrm{cm}}x_\theta+\phi_0,
+	\label{eq:q2_linear_phase}
+\end{equation}
+其中 $d_{\mathrm{cm}}$ 为以厘米表示的外延层厚度，标准化条纹在新坐标下近似呈等周期变化。对附件 1、2 分别取 $\theta=10^\circ$ 与 $\theta=15^\circ$，构造修正波数序列 $x_{10^\circ}(\widetilde{\nu})$、$x_{15^\circ}(\widetilde{\nu})$。由于原始等间隔波数经非线性映射后不再严格等间隔，本文采用形状保持插值将标准化条纹重采样至均匀修正波数网格，既避免高阶插值的非物理振荡，也满足 FFT 与 Hilbert 变换对等间隔采样的要求。
+
+\subsection{干涉基频识别与基频信号重构}
+\label{subsec:q2_fft}
+
+经异常值处理、轻度平滑、慢变基线校正和振幅包络归一化后，标准化条纹在均匀修正波数网格上近似满足
+\begin{equation}
+	z(x)
+	\approx
+	\cos\left(4\pi d_{\mathrm{cm}}x+\phi_0\right)
+	=
+	\cos\left(2\pi f_0x+\phi_0\right).
+	\label{eq:q2_standardized_fringe}
+\end{equation}
+
+比较余弦函数的标准形式，可得修正波数域中的干涉基频与厚度满足
+\begin{equation}
+	f_0=2d_{\mathrm{cm}}.
+	\label{eq:q2_frequency_thickness}
+\end{equation}
+
+因此，由 FFT 得到基频估计 $\widehat f_0$ 后，厚度初值为
+\begin{equation}
+	d_{\mathrm{FFT}}
+	=
+	\frac{\widehat f_0}{2}\times10^4
+	\ \mu\mathrm{m}.
+	\label{eq:q2_fft_thickness}
+\end{equation}
+
+FFT\upcite{bracewell2000fourier} 在本文中主要承担基频定位和尺度估计作用：一方面给出厚度数量级，另一方面为后续基频带通范围和极值检测最小间距提供依据。由于有限观测区间会产生频谱泄漏，FFT 峰位还会受到边界效应、振幅衰减和残余色散误差影响，因此不直接将其作为最终厚度。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.94\textwidth]{fft}
+	\caption{修正波数域 FFT 频谱与基频识别（红色虚线为选定基频，横轴为等效厚度 $1/2\Delta x$）：（左）碳化硅，（右）硅}
+	\label{fig:q2_fft_sic}
+\end{figure}
+
+由图 \ref{fig:q2_fft_sic} 可见，修正波数域频谱在低频区域出现清晰主峰。附件 1 的基频估计为 $\widehat f_0=0.00149464$，代入式 \eqref{eq:q2_fft_thickness} 得 FFT 厚度初值 $d_{\mathrm{FFT},10^\circ}=7.4732\ \mu\mathrm m$；附件 2 相应为 $d_{\mathrm{FFT},15^\circ}=7.4922\ \mu\mathrm m$。两者处于同一量级，说明修正波数变换有效削弱了折射率色散与入射角差异对条纹周期的影响。
+
+为降低高频噪声、慢变背景和高次谐波的干扰，本文仅保留 $\gamma_1\widehat f_0\le f\le\gamma_2\widehat f_0$ 范围内的基频分量，经逆变换得到基频重构信号 $z_{\mathrm{fund}}(x)$。后续峰级次、谷级次和 Hilbert 相位计算均作用于 $z_{\mathrm{fund}}(x)$，既保留厚度决定的基本周期，又减弱局部尖锐峰形和高次谐波的影响。
+
+\subsection{基于基频信号的厚度估计}
+\label{subsec:q2_estimators}
+
+峰级次回归、谷级次回归和 Hilbert 相位法均建立在式 \eqref{eq:q2_linear_phase} 所示的统一物理关系上，但分别利用离散极大值、离散极小值和连续相位信息。三种方法的并行使用，可检验厚度结果是否过度依赖某一类局部特征。
+
+\subsubsection{峰级次与谷级次稳健回归}
+
+在基频重构信号 $z_{\mathrm{fund}}(x)$ 上提取峰位置 $x_m^{(p)}$，由问题一的极值级次线性关系（式 \eqref{eq:extremum_order_linear_relation}），考虑峰位检测误差后建立
+\begin{equation}
+	m
+	=
+	2d_{\mathrm{cm}}x_m^{(p)}
+	+
+	b_p
+	+
+	\varepsilon_m,
+	\label{eq:q2_peak_regression}
+\end{equation}
+设稳健回归斜率为 $k$，则厚度 $d=\tfrac{|k|}{2}\times10^4\ \mu\mathrm m$。为提高定位精度，本文在离散极值邻域内作局部二次插值以实现亚采样定位；若相邻峰距接近典型峰距的整数倍，则判定存在漏峰并相应增加干涉级次；回归采用 Huber 损失\upcite{huber1964robust}以减弱伪峰、边界峰和异常点的影响。谷级次法与之完全相同，仅将极值检测作用于 $-z_{\mathrm{fund}}(x)$，得到 $d_{\mathrm{valley}}$。若峰、谷结果接近，说明基线处理和局部峰形未对基本周期造成明显偏移；若差异较大，则提示非正弦波形、多光束或局部吸收对不同极值位置产生了不同影响。
+
+\subsubsection{Hilbert 连续相位法}
+
+峰、谷方法仅使用有限个极值点。为利用整段基频信号，进一步构造解析信号
+\begin{equation}
+	z_a(x)
+	=
+	z_{\mathrm{fund}}(x)
+	+
+	\mathrm{i}\mathcal H
+	\left[
+	z_{\mathrm{fund}}(x)
+	\right],
+	\label{eq:q2_analytic_signal}
+\end{equation}
+其中，$\mathcal H[\cdot]$ 表示 Hilbert 变换。其展开相位 $\phi(x)=\operatorname{unwrap}\arg z_a(x)$ 在基频信号近似单分量时满足
+\begin{equation}
+	\phi(x)
+	=
+	4\pi d_{\mathrm{cm}}x
+	+
+	\phi_H
+	+
+	\varepsilon_\phi(x).
+	\label{eq:q2_hilbert_regression}
+\end{equation}
+
+设相位关于修正波数的稳健回归斜率为 $k_\phi$，则
+\begin{equation}
+	d_{\mathrm{Hilbert}}
+	=
+	\frac{|k_\phi|}{4\pi}
+	\times10^4
+	\ \mu\mathrm{m}.
+	\label{eq:q2_hilbert_thickness}
+\end{equation}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.94\textwidth]{hilbert}
+	\caption{Hilbert 展开相位与线性拟合（相位斜率的 $1/4\pi$ 即为厚度）：（左）碳化硅，（右）硅}
+	\label{fig:hilbert}
+\end{figure}
+
+\cref{fig:hilbert} 给出两种材料的 Hilbert 展开相位及线性拟合，可见展开相位随修正波数近似线性增长，拟合优度极高（碳化硅 $R^2=0.99996$、硅 $R^2=0.99802$），从连续相位角度验证了问题一的线性相位模型。该法不依赖单个极值位置，对局部漏峰和峰位误差相对不敏感，但依赖基线校正与基频隔离，故本文先重构基频再展开相位，并剔除两端受边界效应影响较大的区间。
+
+\subsection{双角度、多方法稳健融合}
+\label{subsec:q2_fusion}
+
+对附件1、2分别应用上述三种厚度估计方法，计算结果见表 \ref{tab:q2_method_results}。
+
+\begin{table}[htbp]
+	\centering
+	\caption{两个入射角下不同方法的 SiC 厚度估计}
+	\label{tab:q2_method_results}
+	\begin{tabular}{ccccc}
+		\toprule
+		入射角 &
+		FFT 初值/$\mu\mathrm{m}$ &
+		峰级次回归/$\mu\mathrm{m}$ &
+		谷级次回归/$\mu\mathrm{m}$ &
+		Hilbert 相位法/$\mu\mathrm{m}$ \\
+		\midrule
+		$10^\circ$ & 7.4732 & 7.4891 & 7.4919 & 7.4897 \\
+		$15^\circ$ & 7.4922 & 7.4634 & 7.4549 & 7.4573 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+由表 \ref{tab:q2_method_results} 可见，在同一入射角下，峰、谷和 Hilbert 三种结果高度接近，说明三种数值实现均稳定捕捉到了同一基本干涉周期。FFT 初值与三种精化结果也处于相同范围，表明频域基频识别不存在明显的整数倍误判。
+
+同一块样品在两个入射角下应具有相同厚度。将六个精化结果 $\{d_{p,10},d_{v,10},d_{H,10},d_{p,15},d_{v,15},d_{H,15}\}$ 组成集合 $\mathcal D_{\mathrm{SiC}}$。由表 \ref{tab:q2_method_results}，同一入射角下峰、谷、Hilbert 结果较为集中，两个入射角间相对差小于 $0.5\%$，总体一致。考虑到六个结果共享相同折射率与预处理基础、并非完全独立观测，本文不作独立样本加权平均，而取中位数作为稳健共识估计：
+\begin{equation}
+	\widehat d_{\mathrm{SiC}}
+	=
+	\operatorname{median}\mathcal D_{\mathrm{SiC}}
+	=
+	7.4763\ \mu\mathrm{m}.
+	\label{eq:q2_final_point_estimate}
+\end{equation}
+中位数对单一角度或方法的局部偏移不敏感，又保持两个入射角的对等贡献，故适合作为当前数据条件下的最终点估计。
+
+
 \section{问题三：多光束干涉判定与厚度修正}
-% TODO: 7.1 含吸收的多光束干涉模型
-% TODO: 7.2 多光束干涉的形成条件
-% TODO: 7.3 附件3、4的多光束综合判定
-% TODO: 7.4 硅外延层厚度求解
-% TODO: 7.5 碳化硅多光束影响检验
-\textit{（本章待定稿。）}
+
+问题一仅保留外延层表面的直接反射光与第一束界面返回光，问题三则进一步考虑光在上下界面间的多次往返，主要任务包括：推导多光束干涉的形成条件，分析其对厚度反演的影响，判断附件 3、4 是否存在显著多光束效应并求取硅外延层厚度，同时检验附件 1、2 中碳化硅厚度是否需要修正。为此本文采用“物理模型推导—多证据判定—基频稳健反演—SiC 结果复核”的路线：先由多次反射光场的几何级数建立含吸收的 Airy/TMM 模型，再以峰谷分离、谐波含量、条纹可见度及完整波形拟合共同判断多光束效应，最后依据 Airy 模型基本相位周期不变的性质提取基频并作双角度峰级次回归，以降低未知复折射率和吸收参数对厚度估计的影响。
+
+\subsection{含吸收的多光束干涉模型}
+\label{subsec:q3_multibeam_model}
+
+\subsubsection{多次反射光场叠加}
+
+延续问题一的三层介质结构，将空气、外延层和衬底依次记为介质 $0,1,2$，复折射率 $\widetilde n_j=n_j+\mathrm i\kappa_j$（$j=0,1,2$，$n_j$ 为折射率实部、$\kappa_j$ 为消光系数）。对偏振方向 $u=s,p$，设第一束内部返回光的复振幅为 $E_1^{(u)}$。光在外延层内每增加一次往返，需要再经历上下界面各一次反射，并附加一次往返传播相位，因此相邻两束内部返回光的复振幅比为
+\begin{equation}
+	\eta^{(u)}
+	=
+	r_{10}^{(u)}r_{12}^{(u)}
+	\exp(2\mathrm{i}\beta),
+	\label{eq:q3_amplitude_ratio}
+\end{equation}
+其中 $r_{ij}^{(u)}$ 为介质 $i$ 到介质 $j$ 的 Fresnel 振幅反射系数，$\beta=2\pi\widetilde\nu d\,\widetilde n_1(\widetilde\nu)\cos\theta_1$ 为光在外延层内单程传播的复相位。于是全部内部返回光构成几何级数 $E_{\mathrm{int}}^{(u)}=E_1^{(u)}\sum_{k\ge0}\big(\eta^{(u)}\big)^k$；当 $|\eta^{(u)}|<1$ 时级数收敛，
+\begin{equation}
+	E_{\mathrm{int}}^{(u)}
+	=
+	\frac{E_1^{(u)}}{1-\eta^{(u)}}.
+	\label{eq:q3_geometric_sum}
+\end{equation}
+
+因此，多光束反射不是若干独立条纹的简单相加，而是由界面反射、传播相位和吸收衰减共同决定的相干叠加过程。
+
+\subsubsection{吸收衰减与 Airy 反射率}
+
+若以 $\alpha(\widetilde\nu)$ 表示外延层强度吸收系数，光强按 $I(L)=I_0\exp(-\alpha L)$ 衰减；一次往返几何路程 $L_{\mathrm{rt}}=2d/\cos\theta_1$，故一次往返的电场振幅衰减因子为
+\begin{equation}
+	a(\widetilde\nu)
+	=
+	\exp\left[
+	-\frac{\alpha(\widetilde\nu)d}{\cos\theta_1}
+	\right].
+	\label{eq:q3_amplitude_attenuation}
+\end{equation}
+若采用复折射率 $\widetilde n_1=n_1+\mathrm{i}\kappa_1$，吸收已包含于复传播因子 $\exp(2\mathrm{i}\beta)$ 中（$\alpha=4\pi\widetilde\nu\kappa_1$）；实际计算只取复折射率传播或显式吸收因子之一，避免吸收被重复计入。
+
+对 $s$、$p$ 两种偏振，界面 Fresnel 振幅反射系数分别为
+\begin{equation}
+	r_{ij}^{(s)}
+	=
+	\frac{\widetilde n_i\cos\theta_i-\widetilde n_j\cos\theta_j}
+	{\widetilde n_i\cos\theta_i+\widetilde n_j\cos\theta_j},
+	\qquad
+	r_{ij}^{(p)}
+	=
+	\frac{\widetilde n_j\cos\theta_i-\widetilde n_i\cos\theta_j}
+	{\widetilde n_j\cos\theta_i+\widetilde n_i\cos\theta_j}.
+	\label{eq:q3_fresnel_s}
+\end{equation}
+
+将表面直接反射光与全部内部返回光叠加，可得单层膜的等效复振幅反射系数
+\begin{equation}
+	r_{\mathrm{eff}}^{(u)}
+	=
+	\frac{
+		r_{01}^{(u)}
+		+
+		r_{12}^{(u)}\exp(2\mathrm{i}\beta)
+	}{
+		1+
+		r_{01}^{(u)}r_{12}^{(u)}
+		\exp(2\mathrm{i}\beta)
+	},
+	\qquad u=s,p.
+	\label{eq:q3_effective_reflection_coefficient}
+\end{equation}
+
+题目未给出入射光的偏振状态，本文按非偏振光处理，将两种偏振的反射率等权平均：
+\begin{equation}
+	R_{\mathrm{multi}}(\widetilde\nu)
+	=
+	\frac{1}{2}
+	\left(
+	\left|r_{\mathrm{eff}}^{(s)}\right|^2
+	+
+	\left|r_{\mathrm{eff}}^{(p)}\right|^2
+	\right).
+	\label{eq:q3_unpolarized_reflectance}
+\end{equation}
+
+式 \eqref{eq:q3_unpolarized_reflectance} 即单层 Airy 模型，也可由传输矩阵法得到\upcite{macleod2010thin}。与问题一的双光束模型相比，其分母包含全部高阶往返反射的累积效应；当高阶返回光幅值很小时，模型退化为问题一的双光束近似。
+
+\subsection{多光束干涉的形成条件及厚度影响}
+\label{subsec:q3_conditions_effects}
+
+\subsubsection{多光束干涉的可观测条件}
+
+多次反射在物理上始终存在，但只有高阶返回光未被吸收、失相干或空间平均时，才会在实测光谱中形成可辨识的多光束特征。其可观测条件可归纳为以下四类。
+
+\textbf{（1）幅值条件。}
+外延层与空气、衬底间应具有足够的折射率差，且吸收不能过强。相邻返回光幅值比须超过由测量噪声决定的可检测阈值 $\tau_{\mathrm{noise}}$，即
+\begin{equation}
+	\left|\eta^{(u)}\right|
+	=
+	\left|r_{10}^{(u)}r_{12}^{(u)}\right|
+	\exp\!\left(-\frac{\alpha d}{\cos\theta_1}\right)
+	>\tau_{\mathrm{noise}}.
+	\label{eq:q3_detectable_amplitude_ratio}
+\end{equation}
+界面反射越弱、吸收越大或外延层越厚，高阶光束越难被观测。
+
+\textbf{（2）相干条件。}
+相邻返回光光程差 $\operatorname{OPD}=2d\,\operatorname{Re}(\widetilde n_1\cos\theta_1)$，光源或光谱仪的有效相干长度须满足 $L_c\gtrsim\operatorname{OPD}$，否则不同阶返回光的相位关系无法稳定保持。
+
+\textbf{（3）仪器分辨条件。}
+沿用修正波数 $x_\theta$（式 \eqref{eq:xtheta}，复折射率下取实部）。相邻同类条纹对应 $2\pi$ 相位变化，局部条纹间距 $\Delta\widetilde\nu_{\mathrm{fringe}}\approx\big(2d\,\mathrm d x_\theta/\mathrm d\widetilde\nu\big)^{-1}$；光谱仪波数分辨率须满足 $\delta\widetilde\nu_{\mathrm{inst}}\ll\Delta\widetilde\nu_{\mathrm{fringe}}$，否则尖锐的 Airy 峰谷会被仪器响应展宽或平均。
+
+\textbf{（4）空间一致性条件。}
+光斑范围内的厚度不均匀、入射角分布及波数分辨率均会引起相位展宽
+\begin{equation}
+	\sigma_\Phi^2
+	\approx
+	\left(\frac{\partial\Phi}{\partial d}\sigma_d\right)^2
+	+
+	\left(\frac{\partial\Phi}{\partial\theta_0}\sigma_\theta\right)^2
+	+
+	\left(\frac{\partial\Phi}{\partial\widetilde\nu}\sigma_{\widetilde\nu}\right)^2.
+	\label{eq:q3_phase_spread}
+\end{equation}
+当 $\sigma_\Phi$ 达一个弧度量级时，不同位置或方向的条纹开始明显相互平均。因此上下界面还应近似平行、平整，且高阶返回光能落入同一探测区域。
+
+综上，多光束干涉的可观测条件可概括为：高阶光束幅值可检测、不同阶光束保持相干、仪器能够分辨条纹结构，且空间相位平均不能过强。
+
+\subsubsection{多光束对厚度反演的影响}
+
+Airy 反射率关于往返相位 $\Phi$ 仍为周期函数，可展开为
+\begin{equation}
+	R(\Phi)
+	=
+	c_0+
+	\sum_{k=1}^{\infty}
+	\left[
+	a_k\cos(k\Phi)
+	+
+	b_k\sin(k\Phi)
+	\right].
+	\label{eq:q3_airy_fourier_expansion}
+\end{equation}
+
+其中，$k=1$ 为基本干涉频率，$k=2,3,\ldots$ 为多次反射产生的高次谐波。因此，在折射率和界面参数随波数缓慢变化的理想条件下，多光束主要改变条纹形状，使峰谷变尖、谷值加深并产生高次谐波，但基本周期仍由
+\begin{equation}
+	\Phi(x)
+	=
+	4\pi d x+\phi_0
+	\label{eq:q3_fundamental_phase_relation}
+\end{equation}
+决定。只要正确提取 $k=1$ 基频，仍可利用问题一的相位斜率反演厚度。
+
+多光束造成系统偏差的主要途径包括：高次谐波与基频混叠；吸收、色散及 Fresnel 相位使峰谷位置产生不同程度的偏移；厚度、折射率和消光系数相互耦合，使完整波形拟合出现多组近似等价解。因此，问题三不能简单地将“存在多光束”与“厚度一定不准确”等同，而应判断多光束是否已造成基本相位估计的实质偏移。
+
+\subsection{附件3、4的多光束综合判定}
+\label{subsec:q3_multibeam_assessment}
+
+\subsubsection{双光束基准模型与三谐波诊断模型}
+
+以问题一的双光束模型作为基准：
+\begin{equation}
+	M_1:\quad
+	R(\widetilde\nu)
+	=
+	A(\widetilde\nu)
+	+
+	B(\widetilde\nu)
+	\cos\Phi(\widetilde\nu).
+	\label{eq:q3_two_beam_model}
+\end{equation}
+
+若高阶反射不可忽略，Airy 波形会出现二次、三次等谐波。为在不引入过多未知光学常数的情况下衡量非正弦程度，建立三谐波诊断模型
+\begin{equation}
+	M_2:\quad
+	R(\widetilde\nu)
+	=
+	A(\widetilde\nu)
+	+
+	\sum_{k=1}^{3}
+	\left[
+	a_k\cos(k\Phi)
+	+
+	b_k\sin(k\Phi)
+	\right].
+	\label{eq:q3_three_harmonic_model}
+\end{equation}
+
+三谐波模型不是完整的多光束物理模型，而是双光束模型与 Airy/TMM 之间的经验诊断模型。若加入 $k=2,3$ 后拟合显著改善，说明实测条纹中存在不能由单一基频解释的稳定结构。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.96\textwidth]{waveform_fit}
+	\caption{完整波形拟合比较：（左）碳化硅双光束拟合及残差，条纹近正弦；（右）硅的双光束与三谐波拟合，双光束难以刻画尖锐峰谷而三谐波显著改善}
+	\label{fig:waveform_fit}
+\end{figure}
+
+由\cref{fig:waveform_fit} 可见：碳化硅的双光束拟合残差较小、无明显系统性周期结构，条纹接近正弦；而硅的双光束模型（红色虚线）难以同时拟合较尖锐的峰谷、局部平台及非对称波形，加入二次、三次谐波后（橙色）对局部峰形和非正弦结构的刻画显著改善，表明硅光谱中存在稳定的高次谐波成分。
+
+完整波形拟合采用均方根误差
+\begin{equation}
+	\mathrm{RMSE}
+	=
+	\sqrt{
+		\frac{1}{N}
+		\sum_{i=1}^{N}
+		\left(
+		R_i-\widehat R_i
+		\right)^2
+	}
+	\label{eq:q3_rmse}
+\end{equation}
+衡量预测误差，并采用贝叶斯信息准则\upcite{schwarz1978estimating}
+\begin{equation}
+	\mathrm{BIC}
+	=
+	N\ln\left(\frac{\mathrm{RSS}}{N}\right)
+	+k\ln N
+	\label{eq:q3_bic}
+\end{equation}
+对模型参数数量进行惩罚。RMSE 越小表示拟合曲线越接近数据，BIC 越小表示在兼顾拟合精度和模型复杂度后综合表现越好。由于光谱相邻采样点具有较强相关性，普通 BIC 可能放大复杂模型的优势，因此本文仅用 RMSE 和 BIC 判断波形是否显著偏离单一正弦，而不以拟合误差最小的模型直接决定最终厚度。
+
+\subsubsection{判定指标与结果}
+
+除模型比较外，进一步构造三个具有明确物理含义的特征指标。峰谷厚度相对差 $E_{pv}=|d_{\mathrm{peak}}-d_{\mathrm{valley}}|/[(d_{\mathrm{peak}}+d_{\mathrm{valley}})/2]\times100\%$。理想双光束条件下峰与谷具有相同的相位周期；$E_{pv}$ 较大说明非正弦峰形、吸收或复反射相位已使两类极值产生不同程度的偏移。
+
+二次谐波比 $\Gamma_2=H_2/H_1$（$H_1$、$H_2$ 分别为修正波数域中基频与二次谐波的幅值）直接反映高阶结构相对于基本干涉条纹的强弱。
+
+采用稳健分位数定义条纹可见度 $V=(R_{95}-R_5)/|R_{95}+R_5|$，其中 $R_{95}$、$R_5$ 分别为反射率的 $95\%$ 与 $5\%$ 分位数，可降低孤立异常点对判定结果的影响。
+
+结合本数据的噪声水平、SiC 稳定数据的指标分布及参数扰动结果，设置本数据集的经验判据 $E_{pv}>1\%$、$\Gamma_2>0.04$、$V>0.12$。上述阈值用于本组数据的稳健分类，不作为普适物理常数。附件3、4的诊断结果见表 \ref{tab:q3_multibeam_diagnostics}。
+
+\begin{table}[htbp]
+	\centering
+	\caption{附件3、4的多光束诊断结果}
+	\label{tab:q3_multibeam_diagnostics}
+	\begin{tabular}{lccc}
+		\toprule
+		指标 & Si（附件3、4） & 判定阈值 & 结果 \\
+		\midrule
+		峰谷厚度相对差 $E_{pv}$ & $1.840\%$ & $1\%$ & 超过 \\
+		二次谐波比 $H_2/H_1$ & 0.0671 & 0.04 & 超过 \\
+		条纹可见度 $V$ & 0.6523 & 0.12 & 超过 \\
+		$\mathrm{BIC}_{\mathrm{two}}-\mathrm{BIC}_{\mathrm{harmonic}}$
+		& 约 1951 & 辅助指标 & 明显改善 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+峰谷分离、二次谐波比和条纹可见度均超过判定阈值，且三谐波模型相对于双光束模型具有明显更低的 BIC。结合硅光谱中较深、较尖锐的谷值，可判定附件3、4存在显著多光束干涉。
+
+\subsection{硅外延层厚度求解}
+\label{subsec:q3_si_thickness}
+
+\subsubsection{基频稳健反演方法}
+
+虽然附件3、4存在显著多光束效应，但由 Airy 模型的傅里叶展开可知，其基本相位仍满足式 \eqref{eq:q3_fundamental_phase_relation}。因此，本文不将全部非正弦波形压缩为单一余弦进行拟合，而是先从多光束条纹中提取 $k=1$ 基频，再根据基本相位周期估计厚度。该方法可视为 Airy/TMM 物理模型下的半参数估计：多次反射决定谐波和峰形，而厚度主要由基频相位斜率确定；未知振幅、吸收及衬底光学参数作为干扰参数，不直接参与最终厚度回归。
+
+硅的色散折射率采用\cref{subsec:dispersion} 给出的中红外 Sellmeier 模型（式 \eqref{eq:si_dispersion}）。后续修正波数映射、均匀重采样、FFT 基频识别、窄带重构和峰级次稳健回归与问题二相同。与 SiC 不同的是，硅光谱存在更强的高次谐波，因此采用较窄的基频重构范围，并将最终估计限定为双角度峰级次结果。
+
+尽管硅光谱具有明显非正弦特征，其修正波数域 FFT 频谱（\cref{fig:q2_fft_sic} 右）仍存在可辨识的基本频率。基频估计 $f_0=0.00069109$，对应 FFT 厚度初值 $d_{\mathrm{FFT}}=\tfrac{f_0}{2}\times10^4=3.4554\ \mu\mathrm m$，与双角度峰级次估计接近，说明多光束主要改变条纹形状并产生高次谐波，而基本相位周期仍保留了厚度信息。
+
+\subsubsection{计算结果与方法选择}
+
+附件3、4的候选厚度结果见表 \ref{tab:q3_si_candidate_results}。
+
+\begin{table}[htbp]
+	\centering
+	\caption{附件3、4的候选厚度估计结果}
+	\label{tab:q3_si_candidate_results}
+	\begin{tabular}{ccccc}
+		\toprule
+		入射角 &
+		FFT/$\mu\mathrm{m}$ &
+		峰级次/$\mu\mathrm{m}$ &
+		谷级次/$\mu\mathrm{m}$ &
+		Hilbert/$\mu\mathrm{m}$ \\
+		\midrule
+		$10^\circ$ & 3.4554 & 3.4767 & 3.5536 & 3.5519 \\
+		$15^\circ$ & 3.4609 & 3.4674 & 3.5195 & 3.5279 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+可见，谷级次与 Hilbert 相位结果整体高于峰级次结果，说明尖锐谷值和连续相位仍受到高次谐波、吸收及仪器展宽的影响。相比之下，基频隔离后的峰级次结果 $d_{p,10}=3.4767\ \mu\mathrm m$、$d_{p,15}=3.4674\ \mu\mathrm m$，两者相对差仅 $E_{\theta,\mathrm{Si}}\approx0.268\%$。故取双角度峰级次结果的稳健中位数作为硅外延层厚度：
+\begin{equation}
+	\widehat d_{\mathrm{Si}}
+	=
+	\operatorname{median}\{d_{p,10},d_{p,15}\}
+	=
+	3.4720\ \mu\mathrm{m}.
+	\label{eq:q3_si_final_thickness}
+\end{equation}
+
+完整波形模型的拟合结果见表 \ref{tab:q3_full_waveform_results}。
+
+\begin{table}[htbp]
+	\centering
+	\caption{硅光谱完整波形模型的拟合结果}
+	\label{tab:q3_full_waveform_results}
+	\begin{tabular}{lccc}
+		\toprule
+		完整波形模型 &
+		最优厚度/$\mu\mathrm{m}$ &
+		RMSE &
+		BIC \\
+		\midrule
+		双光束模型 & 3.6263 & 0.2750 & $-31472.3$ \\
+		三谐波模型 & 3.6392 & 0.2524 & $-33423.4$ \\
+		有效参数 TMM & 3.7175 & 0.3385 & $-26426.9$ \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+三谐波模型具有更低的 RMSE 和 BIC，进一步证明硅光谱存在稳定高次谐波；但其参数主要用于描述波形，并不对应唯一的界面光学参数。另一方面，题目未给出硅衬底掺杂浓度、消光系数和载流子阻尼等信息，TMM 中厚度与复折射率参数存在明显耦合，不同有效参数组合可能产生相近波形。因此，表 \ref{tab:q3_full_waveform_results} 中的完整波形最优厚度用于模型诊断和敏感性分析，不直接替代双角度基频峰级次的最终结果。
+
+\subsection{附件1、2的多光束影响检验}
+\label{subsec:q3_sic_check}
+
+问题三还要求判断附件1、2中可能存在的多光束效应是否会降低问题二厚度结果的精度。为此，将 SiC 光谱代入与硅相同的多证据诊断框架，结果见表 \ref{tab:q3_sic_diagnostics}。
+
+\begin{table}[htbp]
+	\centering
+	\caption{附件1、2的多光束诊断结果}
+	\label{tab:q3_sic_diagnostics}
+	\begin{tabular}{lcc}
+		\toprule
+		指标 & SiC（附件1、2） & 判定阈值 \\
+		\midrule
+		峰谷厚度相对差 $E_{pv}$ & $0.076\%$ & $1\%$ \\
+		二次谐波比 $H_2/H_1$ & 0.0178 & 0.04 \\
+		条纹可见度 $V$ & 0.0885 & 0.12 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+三项指标均未达到显著多光束影响的联合阈值。虽然三谐波模型的 BIC 明显低于单一双光束模型，说明 SiC 光谱并非严格正弦，但这种非正弦性主要改变局部峰形，并未造成峰、谷和连续相位估计的明显分离。
+
+双光束模型能够较好恢复 SiC 条纹的基本周期，但局部峰形与残差仍含一定高频结构，说明光谱中存在轻微非正弦成分。结合峰谷厚度差、二次谐波比和条纹可见度均较小，可知该非正弦性主要影响局部波形，而未对基本相位周期产生实质偏移。
+
+从 Airy 模型的傅里叶结构看，削弱多光束影响的关键在于保留 $k=1$ 基频、抑制 $k\geq2$ 的高次谐波。问题二已经在 FFT 基频附近进行窄带重构，并在重构信号上完成峰、谷和 Hilbert 相位估计，因此其求解过程本身已经削弱了多光束高次谐波的影响。结合问题二各方法的一致性及后续不确定度分析，当前证据不足以支持对 SiC 厚度作实质性修正，仍取 $\widehat d_{\mathrm{SiC}}=7.4763\ \mu\mathrm m$。
+
+综上，附件3、4中存在显著多光束干涉，本文在 Airy/TMM 物理模型下采用基频隔离与双角度峰级次回归，得到硅外延层厚度 $3.4720\ \mu\mathrm{m}$；附件1、2虽含轻微非正弦成分，但多光束影响小于总体不确定度，问题二的碳化硅厚度结果可以保留。
+
 
 % ======================================================================
 % 8 结果可靠性与模型评价（待定稿）
 % ======================================================================
 \section{结果可靠性与模型评价}
-% TODO: 8.1 分块Bootstrap不确定性
-% TODO: 8.2 参数与频段敏感性
-% TODO: 8.3 最终结果汇总
-\textit{（本章待定稿。）}
+\label{sec:reliability}
+
+为避免仅依据单次计算结果给出结论，本文从统计不确定性、参数敏感性、双角度一致性、分频段稳定性和模型可辨识性五个方面，对碳化硅与硅外延层厚度结果进行综合评价。需要说明的是，光谱数据相邻采样点具有明显相关性，且完整波形模型中厚度、折射率、吸收和基线参数之间存在耦合，因此传统独立同分布误差假设并不完全成立。基于此，本文采用连续块 Bootstrap 估计统计波动，并通过参数扰动和模型对比评估系统误差。
+
+\subsection{连续块 Bootstrap 不确定性分析}
+\label{subsec:block_bootstrap}
+
+设模型拟合残差为 $e_i=R_i-\widehat R_i$（$i=1,\ldots,N$）。若对单个残差独立重采样，将破坏条纹的局部连续性并低估相邻点相关带来的不确定性；为保持残差的短程结构，本文采用连续块 Bootstrap\upcite{davison1997bootstrap,kunsch1989jackknife}：将残差按长度 $L$ 分为若干连续块，有放回抽样拼接为新残差序列，叠加到拟合信号上构造模拟光谱，对每组模拟光谱重新执行预处理、基频识别、峰谷定位、Hilbert 相位回归及双角度融合，重复 $B$ 次得到厚度样本 $\{\widehat d^{(b)}\}$。本文取 $B=400$、$L=80$，由样本的 $2.5\%$、$97.5\%$ 分位数构造 $95\%$ 区间 $\mathrm{CI}_{95\%}=[Q_{0.025}(\widehat d^{(b)}),\,Q_{0.975}(\widehat d^{(b)})]$。
+
+对于碳化硅外延层，得到
+\begin{equation}
+	d_{\mathrm{SiC}}
+	=
+	7.4763\ \mu\mathrm{m},
+	\qquad
+	\mathrm{CI}_{95\%}
+	=
+	[7.4580,\,7.4919]\ \mu\mathrm{m}.
+	\label{eq:sic_bootstrap_result}
+\end{equation}
+
+对于硅外延层，得到
+\begin{equation}
+	d_{\mathrm{Si}}
+	=
+	3.4720\ \mu\mathrm{m},
+	\qquad
+	\mathrm{CI}_{95\%}
+	=
+	[3.4502,\,3.5198]\ \mu\mathrm{m}.
+	\label{eq:si_bootstrap_result}
+\end{equation}
+
+两种材料的 Bootstrap 厚度分布如\cref{fig:bootstrap} 所示。分布均近似单峰对称，点估计位于分布中心附近；碳化硅的分布明显更窄（标准误约 $0.008\ \mu\mathrm m$），硅因存在多光束和更强的波形畸变而分布更宽（标准误约 $0.018\ \mu\mathrm m$），这与其双角度、多方法离散度更大的现象一致。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.94\textwidth]{bootstrap}
+	\caption{连续块 Bootstrap 厚度分布与 $95\%$ 置信区间：（左）碳化硅，（右）硅}\label{fig:bootstrap}
+\end{figure}
+
+式 \eqref{eq:sic_bootstrap_result} 和式 \eqref{eq:si_bootstrap_result} 主要反映在折射率模型、入射角和预处理参数固定条件下，由光谱扰动和算法重构引起的统计不确定性，并不包含折射率模型偏差等系统误差。
+
+\subsection{参数与频段敏感性分析}
+\label{subsec:sensitivity}
+
+为检验厚度结果是否依赖某一组人为设定参数，本文分别扰动折射率、入射角、平滑窗口、基线阶数、包络窗口、峰值显著度阈值和主分析频段，并在每组参数下重新运行完整求解流程。
+
+\subsubsection{折射率与入射角敏感性}
+
+由修正波数 $x_\theta=\tilde\nu\sqrt{n_1^2-\sin^2\theta_0}$（式 \eqref{eq:xtheta}）可知，厚度结果与折射率模型和入射角直接相关。本文分别设置折射率相对扰动 $n\to n(1+\delta_n)$ 与入射角扰动 $\theta_0\to\theta_0+\delta_\theta$，考察厚度变化。
+
+结果表明，折射率扰动对厚度的影响大于轻微入射角扰动，是当前系统误差的主要来源之一。这是因为厚度与修正波数近似成反比，折射率的整体偏差会直接改变相位斜率。\cref{fig:sensitivity} 给出两种材料的单因素敏感性排序：无论碳化硅还是硅，折射率 $\pm0.5\%\sim1\%$ 的整体缩放均位于图的两端，对应最大的厚度相对变化；而入射角 $\pm0.2^\circ$、平滑窗口、峰值显著度等参数的影响则明显偏小。这从数值上验证了折射率是首要误差来源、而算法参数并非结果的人为决定因素。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.96\textwidth]{sensitivity}
+	\caption{单因素（OFAT）参数敏感性排序（横轴为厚度相对变化）：（左）碳化硅，（右）硅}\label{fig:sensitivity}
+\end{figure}
+
+\subsubsection{预处理参数敏感性}
+
+分别改变 Savitzky--Golay 平滑窗口、基线阶数、包络窗口和峰值检测阈值。结果表明，在合理范围内改变平滑窗口与峰值显著度时，峰级次和 Hilbert 结果变化较小，说明最终厚度并非由某一特定平滑参数人为决定。
+
+相比之下，若基线过度拟合或包络窗口过窄，可能削弱低频条纹或引入相位畸变。因此，本文仅采用轻度平滑和慢变基线估计，并通过多组参数重复计算确认结果稳定。
+
+\subsubsection{分频段稳定性}
+
+将主分析区间划分为若干连续子频段，在每个子频段内独立进行基频识别和厚度反演。若不同频段得到的厚度明显漂移，则可能说明折射率色散模型不充分、局部吸收过强或条纹结构随波数发生变化。
+
+计算结果表明，碳化硅在主分析频段内的厚度估计整体稳定；硅数据的波形畸变更明显，但基频峰级次结果在不同连续频段内仍保持较好一致性。该结果进一步支持问题二采用多方法共识、问题三采用基频峰级次结果的合理性。
+
+综合 Bootstrap 波动与关键参数扰动，本文给出更保守的推荐区间 $d_{\mathrm{SiC}}\in[7.4388,7.5145]\ \mu\mathrm{m}$、$d_{\mathrm{Si}}\in[3.4288,3.5665]\ \mu\mathrm{m}$。需要强调的是，该范围是统计波动与参数敏感性共同形成的稳健区间，不应与严格概率意义下的 $95\%$ 置信区间混同。
+
+\subsection{双角度与多方法一致性评价}
+\label{subsec:consistency}
+
+同一块样品在 $10^\circ$ 和 $15^\circ$ 入射条件下应具有相同厚度，因此双角度一致性可作为检验模型合理性的重要依据。定义双角度相对差
+\begin{equation}
+	E_{\theta}
+	=
+	\frac{
+		\left|d_{10^\circ}-d_{15^\circ}\right|
+	}{
+		\left(d_{10^\circ}+d_{15^\circ}\right)/2
+	}
+	\times100\%.
+	\label{eq:angle_consistency}
+\end{equation}
+
+由式 \eqref{eq:angle_consistency}，碳化硅两角度稳健结果的相对差约为 $E_{\theta,\mathrm{SiC}}\approx0.434\%$，硅双角度峰级次结果的相对差约为 $E_{\theta,\mathrm{Si}}\approx0.268\%$，两者均小于 $0.5\%$，说明修正波数模型较好地消除了斜入射引起的相位差异。
+
+在同一角度下，碳化硅的峰、谷与 Hilbert 结果高度一致，峰谷相对差仅 $E_{pv,\mathrm{SiC}}=0.076\%$，说明其基本周期稳定、三方法稳健融合合理；硅的峰谷相对差 $E_{pv,\mathrm{Si}}=1.840\%$ 明显高于 SiC，表明多光束、高次谐波和吸收效应已对不同极值位置造成不同程度的偏移。因此，问题三不再将峰、谷和 Hilbert 结果直接平均，而选择双角度一致性和分频段稳定性更好的基频峰级次结果作为最终厚度。
+
+\subsection{完整波形模型评价}
+\label{subsec:full_waveform_evaluation}
+
+为检验双光束假设是否充分，本文分别建立双光束模型、三谐波模型和 Airy/TMM 模型，并采用式 \eqref{eq:q3_rmse} 的均方根误差 RMSE 与式 \eqref{eq:q3_bic} 的贝叶斯信息准则 BIC 评价其完整波形拟合效果：RMSE 衡量拟合误差，BIC 在拟合误差基础上对模型复杂度加以惩罚。
+
+两种材料的三谐波模型 BIC 均明显低于双光束，说明光谱含稳定的非正弦成分；但 SiC 的峰谷差、二次谐波比与可见度均较小（非正弦性未对基本周期造成实质偏移），而 Si 三者均明显增大（存在显著多光束干涉）。需指出，完整波形残差仍存在较强自相关，普通 BIC 的有效样本量可能被高估，故 BIC 仅用于判断是否存在稳定非正弦结构，不单独决定最终厚度。此外 TMM 中厚度、复折射率、吸收与衬底参数相互耦合，题目未给出完整掺杂浓度与复折射率信息，不同参数组合可能产生相近光谱，其最优厚度仅用于物理解释和敏感性分析，不替代基频相位方法的稳健结果。
+
+\subsection{模型适用性与局限性}
+\label{subsec:model_limitations}
+
+综合来看，本文模型的主要适用性在于：修正波数模型同时处理折射率色散与斜入射；基频提取将厚度信息与高次谐波、慢变基线分离；峰级次、谷级次与 Hilbert 相位从不同角度验证基本周期；连续块 Bootstrap 保留残差的局部相关结构；双光束—三谐波—TMM 的分层比较区分了波形拟合与厚度估计两类任务。
+
+模型的主要局限在于：厚度结果依赖所采用的折射率色散关系，文献折射率与实际样品可能存在偏差；入射光偏振与仪器响应未知，本文以非偏振平均和等效参数处理；TMM 衬底复折射率参数不完备，物理参数不可完全辨识；光斑内可能存在厚度不均匀，模型给出的是覆盖区域的等效平均厚度；Bootstrap 区间主要反映统计波动，系统误差需结合参数敏感性区间共同判断。因此，本文不以单一误差指标或单一模型的最优拟合值作为最终结论，而综合考虑物理合理性、双角度一致性、分频段稳定性、参数敏感性与模型可辨识性。
+
+\subsection{最终结果汇总}
+\label{subsec:final_summary}
+综合问题二、三及本章可靠性分析，两种材料外延层厚度的最终结果汇总于\cref{tab:final_summary}（含最终厚度、$95\%$ 置信区间、推荐区间、双角度相对差与多光束判定）。
+
+\begin{table}[htbp]
+	\centering
+	\caption{外延层厚度最终结果汇总}\label{tab:final_summary}
+	\begin{tabular}{lccccc}
+		\toprule
+		材料 & 最终厚度/$\mu\mathrm m$ & $95\%$ Bootstrap 区间/$\mu\mathrm m$ & 推荐区间/$\mu\mathrm m$ & 双角度相对差 & 多光束判定 \\
+		\midrule
+		碳化硅 SiC & 7.4763 & $[7.4580,\,7.4919]$ & $[7.4388,\,7.5145]$ & $0.434\%$ & 无实质影响 \\
+		硅 Si     & 3.4720 & $[3.4502,\,3.5198]$ & $[3.4288,\,3.5665]$ & $0.268\%$ & 显著多光束 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.94\textwidth]{results_summary}
+	\caption{双角度、多方法厚度估计的一致性（竖线为最终中位数，绿带为 $95\%$ 置信区间）：（左）碳化硅，（右）硅}\label{fig:results_summary}
+\end{figure}
+
+由\cref{fig:results_summary} 可见：碳化硅在两个入射角、四种方法下的八个估计紧密聚集于置信区间内，最终 $\widehat d_{\mathrm{SiC}}=7.4763\ \mu\mathrm m$（推荐 $7.44\sim7.51\ \mu\mathrm m$）稳健可靠；硅的峰级次结果集中于中位数附近，谷级次与 Hilbert 因多光束效应系统性偏高，故问题三仅取双角度峰级次，得 $\widehat d_{\mathrm{Si}}=3.4720\ \mu\mathrm m$（推荐 $3.43\sim3.57\ \mu\mathrm m$）。前者多光束影响小于总体不确定度、无需实质修正，后者经基频隔离与峰级次回归得到上述稳健结果。
+
+
 
 % ======================================================================
 % 参考文献
 % ======================================================================
 \bibliographystyle{unsrt}
 \bibliography{refer.bib}
+
+
+
+ \newpage
+\section{支撑材料列表}
+\begin{table}[!htbp]
+	\centering
+	\begin{tabular}{|c|c|c|}
+		\hline
+		序号 & 文件名 & 材料说明 \\ \hline
+		
+		1 &
+		scripts/run\_all.py &
+		总体运行主程序 \\ \hline
+		
+		2 &
+		scripts/run\_q2\_sic.py &
+		问题二碳化硅外延层厚度求解主程序 \\ \hline
+		
+		3 &
+		scripts/run\_q3\_si.py &
+		问题三多光束判定与硅外延层厚度求解主程序 \\ \hline
+		
+		4 &
+		src/epitaxy/preprocessing.py &
+		光谱异常值处理、平滑、基线校正及包络归一化 \\ \hline
+		
+		5 &
+		\begin{tabular}[c]{@{}c@{}}
+			src/epitaxy/optics/\\
+			refractive\_index.py
+		\end{tabular} &
+		SiC 与 Si 折射率色散模型及修正波数计算 \\ \hline
+		
+		6 &
+		\begin{tabular}[c]{@{}c@{}}
+			src/epitaxy/optics/\\
+			two\_beam.py
+		\end{tabular} &
+		问题一双光束干涉反射率模型 \\ \hline
+		
+		7 &
+		src/epitaxy/optics/airy.py &
+		含吸收的 Airy 多光束干涉模型 \\ \hline
+		
+		8 &
+		src/epitaxy/optics/tmm.py &
+		单层膜传输矩阵反射率计算 \\ \hline
+		
+		9 &
+		src/epitaxy/optics/fresnel.py &
+		$s$、$p$ 偏振 Fresnel 反射系数计算 \\ \hline
+		
+		10 &
+		\begin{tabular}[c]{@{}c@{}}
+			src/epitaxy/estimation/\\
+			fft\_init.py
+		\end{tabular} &
+		修正波数域 FFT 基频识别及厚度初值计算 \\ \hline
+		
+		11 &
+		\begin{tabular}[c]{@{}c@{}}
+			src/epitaxy/estimation/\\
+			peak\_regression.py
+		\end{tabular} &
+		峰、谷级次识别与 Huber 稳健回归 \\ \hline
+		
+		12 &
+		\begin{tabular}[c]{@{}c@{}}
+			src/epitaxy/estimation/\\
+			hilbert\_phase.py
+		\end{tabular} &
+		Hilbert 连续相位提取及厚度反演 \\ \hline
+		
+		13 &
+		\begin{tabular}[c]{@{}c@{}}
+			src/epitaxy/estimation/\\
+			joint\_harmonic.py
+		\end{tabular} &
+		双角度三谐波完整波形拟合 \\ \hline
+		
+		14 &
+		\begin{tabular}[c]{@{}c@{}}
+			src/epitaxy/estimation/\\
+			final\_estimator.py
+		\end{tabular} &
+		双角度、多方法厚度结果稳健融合 \\ \hline
+		
+		15 &
+		\begin{tabular}[c]{@{}c@{}}
+			src/epitaxy/diagnostics/\\
+			multibeam.py
+		\end{tabular} &
+		峰谷厚度差、谐波比及条纹可见度计算 \\ \hline
+		
+		16 &
+		\begin{tabular}[c]{@{}c@{}}
+			src/epitaxy/diagnostics/\\
+			model\_selection.py
+		\end{tabular} &
+		RMSE、AIC、BIC 等模型评价指标计算 \\ \hline
+		
+		17 &
+		\begin{tabular}[c]{@{}c@{}}
+			src/epitaxy/uncertainty/\\
+			bootstrap.py
+		\end{tabular} &
+		连续块 Bootstrap 不确定度分析 \\ \hline
+		
+		18 &
+		\begin{tabular}[c]{@{}c@{}}
+			src/epitaxy/uncertainty/\\
+			sensitivity.py
+		\end{tabular} &
+		折射率、入射角、预处理参数及频段敏感性分析 \\ \hline
+		
+	
+	\end{tabular}
+\end{table}
 
 \end{document}
